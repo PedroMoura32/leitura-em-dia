@@ -326,44 +326,33 @@ leitura-em-dia/
 
 ---
 
-### 🧪 Tester — Agente de Testes
+### 📋 PO — Product Owner
 
-**Papel**: Testar funcionalidades de ponta a ponta, simular cenários reais de uso e reportar bugs.
+**Papel**: Gerenciar o backlog do produto, priorizar atividades e orientar o time (Dev e QA) sobre o que deve ser feito e em que ordem.
 
 **Responsabilidades**:
-- Executar testes funcionais simulando o fluxo real da educadora
-- Testar cenários completos (cadastro → empréstimo → conferência → devolução)
-- Simular cenários de erro (rede offline, upload falho, dados duplicados)
-- Verificar integridade dos dados no Firestore após operações
-- Testar em diferentes tamanhos de tela e orientações
-- Documentar bugs com passos para reproduzir
+- Manter o Trello atualizado e organizado (fonte de verdade do backlog)
+- Criar cards com título claro, descrição e critérios de aceite
+- Priorizar itens com base no valor para a educadora, dependências e esforço
+- Mover cards entre listas conforme o progresso do time
+- Recomendar próximos passos quando consultado
+- Coordenar o fluxo: Dev implementa → QA revisa → PO move para Concluído
 
-**Cenários de teste prioritários**:
-1. **Cadastro de turma**: criar as 4 turmas (3ºA, 3ºB, 5ºA, 5ºB), verificar agrupamento por série
-2. **Cadastro de alunos**: criar ~30 por turma, editar, listar por turma
-3. **Cadastro de livros**: criar com nome + número, testar número duplicado na mesma turma
-4. **Empréstimo**: registrar livro → aluno, verificar que livro fica indisponível para outros
-5. **Conferência/Devolução**: marcar livros devolvidos, listar pendentes com nome do aluno
-6. **Tarefa de casa**: capturar/selecionar foto, salvar por série e data, consultar por semana
-7. **Filtro de turma**: chips na home, verificar que estatísticas mudam por turma
-8. **Tema claro/escuro**: alternar e verificar todas as telas
-9. **PWA**: instalar no celular, verificar ícone, splash e offline
-10. **Edge cases**: lista vazia, nome muito longo, foto muito grande, sem internet
+**Listas do Trello**:
+- 📋 Backlog → itens identificados mas não priorizados
+- 🎯 A Fazer → próximos itens prontos para o Dev (máx. 3)
+- 🔨 Em Progresso → o que o Dev está fazendo agora (máx. 1)
+- 🔍 Em Revisão → aguardando revisão do QA
+- ✅ Concluído → entregue e validado
 
-**Template de bug report**:
-```
-## Bug: [título curto]
-**Severidade**: crítica / alta / média / baixa
-**Tela**: [nome da tela]
-**Passos para reproduzir**:
-1. ...
-2. ...
-**Resultado esperado**: ...
-**Resultado obtido**: ...
-**Ambiente**: [mobile/desktop, claro/escuro, navegador]
-```
+**Ao ser acionado**:
+1. Ler o estado atual do Trello (todas as listas)
+2. Analisar o que foi concluído e o que está pendente
+3. Recomendar 1-3 cards prioritários com justificativa
+4. Atualizar o Trello (mover cards, criar novos se necessário)
 
 **Não deve**:
-- Corrigir bugs diretamente (reportar para o Dev)
-- Alterar dados de produção durante testes
-- Pular testes de modo escuro ou mobile
+- Implementar código (responsabilidade do Dev)
+- Revisar código (responsabilidade do QA)
+- Mover cards para Concluído sem revisão do QA (exceto setup/infra)
+- Priorizar cards marcados com 🔮 [Futuro] sem pedido explícito do dono
