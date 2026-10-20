@@ -1119,6 +1119,238 @@ img { max-width: 100%; display: block; }
 
 
 /* ================================================================
+   PERFIL DO ALUNO
+   ================================================================ */
+#screen-perfil-aluno {
+  padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-block: 16px 12px;
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  background: var(--bg-primary);
+  z-index: 5;
+}
+
+.btn-back {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.btn-back:hover {
+  background: var(--accent-light);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.profile-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 24px 16px;
+  margin-bottom: 20px;
+}
+
+.profile-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-full);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+}
+
+.profile-name {
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.profile-class {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.profile-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.profile-stat {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 16px 12px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
+}
+
+.profile-stat__value {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.profile-stat__value--accent { color: var(--accent); }
+.profile-stat__value--warning { color: var(--warning); }
+.profile-stat__value--info { color: var(--info); }
+
+.profile-stat__label {
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+  line-height: 1.3;
+}
+
+.profile-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--warning-light);
+  border: 1px solid var(--warning-surface);
+  margin-bottom: 20px;
+}
+
+.profile-alert__icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--warning);
+  margin-top: 1px;
+}
+
+.profile-alert__text {
+  font-size: 0.8125rem;
+  color: var(--warning);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.profile-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.timeline-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+}
+
+.timeline-item--active {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+
+.timeline-item--repeated .timeline-book {
+  color: var(--warning);
+}
+
+.timeline-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.timeline-icon--returned {
+  background: var(--accent-light);
+  color: var(--accent);
+}
+
+.timeline-icon--pending {
+  background: var(--warning-light);
+  color: var(--warning);
+}
+
+.timeline-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.timeline-book {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.timeline-meta {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.timeline-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.timeline-status--returned {
+  background: var(--accent-light);
+  color: var(--accent);
+}
+
+.timeline-status--pending {
+  background: var(--warning-light);
+  color: var(--warning);
+}
+
+.timeline-status--repeated {
+  background: var(--warning-surface);
+  color: var(--warning);
+}
+
+.timeline-number {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+
+/* ================================================================
    EMPTY STATE
    ================================================================ */
 .empty-state {
@@ -1749,6 +1981,28 @@ img { max-width: 100%; display: block; }
 
 
 <!-- ════════════════════════════════════════════════════════════════
+     TELA: PERFIL DO ALUNO
+     ════════════════════════════════════════════════════════════════ -->
+<section id="screen-perfil-aluno" class="screen" hidden>
+  <div class="profile-header">
+    <button class="btn-back" id="btn-perfil-voltar" aria-label="Voltar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+    </button>
+    <h1 class="screen-title" data-i18n="profileTitle">Perfil do Aluno</h1>
+  </div>
+
+  <div class="profile-hero" id="profile-hero"></div>
+
+  <div class="profile-stats" id="profile-stats"></div>
+
+  <div id="profile-alert"></div>
+
+  <div class="section-title" data-i18n="profileHistory">Histórico de leituras</div>
+  <div id="profile-timeline"></div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════════
      TOAST DE NOTIFICAÇÃO
      ════════════════════════════════════════════════════════════════ -->
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
@@ -1949,7 +2203,21 @@ const i18n = {
     homeworkSelectPhoto: 'Selecione uma foto primeiro',
     homeworkWeek: 'Semana',
     homeworkUploading: 'Enviando...',
-    homeworkChangePhoto: 'Trocar foto'
+    homeworkChangePhoto: 'Trocar foto',
+    profileTitle: 'Perfil do Aluno',
+    profileHistory: 'Histórico de leituras',
+    profileBooksRead: 'Livros lidos',
+    profilePending: 'Pendente',
+    profileDaysAvg: 'Média (dias)',
+    profileReturned: 'Devolvido',
+    profilePendingStatus: 'Pendente',
+    profileRepeated: 'Repetido',
+    profileRepeatAlert: 'Este aluno já leu livros repetidos:',
+    profileNoHistory: 'Nenhum empréstimo registrado',
+    profileNoHistoryText: 'O histórico aparecerá aqui quando houver empréstimos',
+    profileLoanDate: 'Emprestado em',
+    profileReturnDate: 'Devolvido em',
+    profileDays: 'dias com o livro'
   }
 };
 
@@ -1964,12 +2232,16 @@ function t(key) {
    NAVEGAÇÃO SPA
    ================================================================ */
 const screens = ['inicio', 'emprestimo', 'conferencia', 'cadastros', 'tarefa'];
+const allScreens = ['inicio', 'emprestimo', 'conferencia', 'cadastros', 'tarefa', 'perfil-aluno'];
 let currentScreen = 'inicio';
+var previousScreen = 'inicio';
 
 function navigateTo(screen) {
-  if (!screens.includes(screen) || screen === currentScreen) return;
+  if (!allScreens.includes(screen) || screen === currentScreen) return;
 
-  screens.forEach(function(s) {
+  previousScreen = currentScreen;
+
+  allScreens.forEach(function(s) {
     var el = document.getElementById('screen-' + s);
     if (el) el.hidden = s !== screen;
   });
@@ -1986,6 +2258,9 @@ function navigateTo(screen) {
 
   var fab = document.getElementById('fab-cadastros');
   if (fab) fab.hidden = screen !== 'cadastros';
+
+  var bottomNav = document.querySelector('.bottom-nav');
+  if (bottomNav) bottomNav.hidden = screen === 'perfil-aluno';
 
   currentScreen = screen;
   window.scrollTo(0, 0);
@@ -2387,7 +2662,7 @@ function renderAlunos() {
     var initials = aluno.nome.split(' ').map(function(w) { return w.charAt(0); }).slice(0, 2).join('').toUpperCase();
     html += '<div class="student-item">' +
       '<div class="student-avatar student-avatar--' + cor + '">' + escapeHtml(initials) + '</div>' +
-      '<div style="flex:1;min-width:0">' +
+      '<div style="flex:1;min-width:0;cursor:pointer" data-action="perfil-aluno" data-id="' + aluno.id + '">' +
       '<div class="student-name">' + escapeHtml(aluno.nome) + '</div>' +
       '<div style="font-size:0.75rem;color:var(--text-muted)">' + (turma ? escapeHtml(turma.nome) : '') + '</div>' +
       '</div>' +
@@ -2543,6 +2818,7 @@ document.getElementById('screen-cadastros').addEventListener('click', function(e
   else if (action === 'excluir-aluno') confirmarExclusao('aluno', id, nome);
   else if (action === 'editar-livro') abrirFormLivro(id);
   else if (action === 'excluir-livro') confirmarExclusao('livro', id, nome);
+  else if (action === 'perfil-aluno') abrirPerfilAluno(id);
 });
 
 
@@ -2654,7 +2930,7 @@ function renderActivityHome() {
       html += '<div class="loan-record">' +
         '<div class="loan-record__icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg></div>' +
         '<div class="loan-record__info">' +
-        '<div class="loan-record__student">' + escapeHtml(aluno ? aluno.nome : '—') + '</div>' +
+        '<div class="loan-record__student" data-perfil-aluno="' + (aluno ? aluno.id : '') + '" style="cursor:pointer">' + escapeHtml(aluno ? aluno.nome : '—') + '</div>' +
         '<div class="loan-record__detail">' + t('loanBook') + ' ' + (livro ? escapeHtml(livro.numero) : '—') + ' · ' + dataStr + '</div>' +
         '</div>' +
         '<span class="student-pending-badge" style="display:inline-flex;background:' + (emp.devolvido ? 'var(--accent-light)' : 'var(--warning-light)') + ';color:' + (emp.devolvido ? 'var(--accent)' : 'var(--warning)') + '">' + (emp.devolvido ? '✓' : '⏳') + '</span>' +
@@ -2770,7 +3046,7 @@ function renderRecentEmprestimos() {
       html += '<div class="loan-record">' +
         '<div class="loan-record__icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg></div>' +
         '<div class="loan-record__info">' +
-        '<div class="loan-record__student">' + escapeHtml(aluno ? aluno.nome : '—') + '</div>' +
+        '<div class="loan-record__student" data-perfil-aluno="' + (aluno ? aluno.id : '') + '" style="cursor:pointer">' + escapeHtml(aluno ? aluno.nome : '—') + '</div>' +
         '<div class="loan-record__detail">' + t('loanBook') + ' ' + (livro ? escapeHtml(livro.numero) : '—') + ' · ' + dataStr + '</div>' +
         '</div>' +
         '<span class="student-pending-badge" style="display:inline-flex;background:' + (emp.devolvido ? 'var(--accent-light)' : 'var(--warning-light)') + ';color:' + (emp.devolvido ? 'var(--accent)' : 'var(--warning)') + '">' + status + '</span>' +
@@ -3219,6 +3495,189 @@ document.getElementById('conferencia-content').addEventListener('click', functio
 });
 
 document.getElementById('btn-confirmar-devolucoes').addEventListener('click', confirmarDevolucoes);
+
+
+/* ================================================================
+   PERFIL DO ALUNO — HISTÓRICO E ALERTAS
+   ================================================================ */
+var perfilAlunoId = null;
+
+function abrirPerfilAluno(alunoId) {
+  perfilAlunoId = alunoId;
+  navigateTo('perfil-aluno');
+  renderPerfilAluno();
+}
+
+function renderPerfilAluno() {
+  if (!perfilAlunoId) return;
+
+  var aluno = alunosCache.find(function(a) { return a.id === perfilAlunoId; });
+  if (!aluno) return;
+
+  var turma = turmasCache.find(function(t) { return t.id === aluno.turma_id; });
+  var turmaIndex = turmasCache.indexOf(turma);
+  var cor = corTurma(turmaIndex >= 0 ? turmaIndex : 0);
+  var initials = aluno.nome.split(' ').map(function(w) { return w.charAt(0); }).slice(0, 2).join('').toUpperCase();
+
+  var heroEl = document.getElementById('profile-hero');
+  heroEl.innerHTML =
+    '<div class="profile-avatar student-avatar--' + cor + '">' + escapeHtml(initials) + '</div>' +
+    '<div class="profile-name">' + escapeHtml(aluno.nome) + '</div>' +
+    '<div class="profile-class">' + (turma ? escapeHtml(turma.nome) + ' · Série ' + turma.serie : '') + '</div>';
+
+  var statsEl = document.getElementById('profile-stats');
+  var timelineEl = document.getElementById('profile-timeline');
+  var alertEl = document.getElementById('profile-alert');
+
+  statsEl.innerHTML = '<div class="empty-state" style="padding:24px;grid-column:1/-1"><div class="empty-state__text">Carregando...</div></div>';
+  alertEl.innerHTML = '';
+  timelineEl.innerHTML = '';
+
+  db.collection('emprestimos')
+    .where('aluno_id', '==', perfilAlunoId)
+    .get()
+    .then(function(snap) {
+      var emprestimos = [];
+      snap.forEach(function(doc) {
+        emprestimos.push(Object.assign({ id: doc.id }, doc.data()));
+      });
+      emprestimos.sort(function(a, b) {
+        var da = a.data_emprestimo ? (a.data_emprestimo.toDate ? a.data_emprestimo.toDate() : new Date(a.data_emprestimo)) : new Date(0);
+        var db2 = b.data_emprestimo ? (b.data_emprestimo.toDate ? b.data_emprestimo.toDate() : new Date(b.data_emprestimo)) : new Date(0);
+        return db2 - da;
+      });
+
+      var devolvidos = emprestimos.filter(function(e) { return e.devolvido; });
+      var pendentes = emprestimos.filter(function(e) { return !e.devolvido; });
+
+      var diasTotal = 0;
+      var diasCount = 0;
+      devolvidos.forEach(function(e) {
+        if (e.data_emprestimo && e.data_devolucao) {
+          var inicio = e.data_emprestimo.toDate ? e.data_emprestimo.toDate() : new Date(e.data_emprestimo);
+          var fim = e.data_devolucao.toDate ? e.data_devolucao.toDate() : new Date(e.data_devolucao);
+          var dias = Math.max(1, Math.round((fim - inicio) / 86400000));
+          diasTotal += dias;
+          diasCount++;
+        }
+      });
+      var mediaStr = diasCount > 0 ? Math.round(diasTotal / diasCount) : '—';
+
+      statsEl.innerHTML =
+        '<div class="profile-stat">' +
+        '<div class="profile-stat__value profile-stat__value--accent">' + devolvidos.length + '</div>' +
+        '<div class="profile-stat__label">' + t('profileBooksRead') + '</div>' +
+        '</div>' +
+        '<div class="profile-stat">' +
+        '<div class="profile-stat__value profile-stat__value--warning">' + pendentes.length + '</div>' +
+        '<div class="profile-stat__label">' + t('profilePending') + '</div>' +
+        '</div>' +
+        '<div class="profile-stat">' +
+        '<div class="profile-stat__value profile-stat__value--info">' + mediaStr + '</div>' +
+        '<div class="profile-stat__label">' + t('profileDaysAvg') + '</div>' +
+        '</div>';
+
+      var livroContagem = {};
+      var livrosRepetidos = [];
+      emprestimos.forEach(function(e) {
+        if (!livroContagem[e.livro_id]) {
+          livroContagem[e.livro_id] = 0;
+        }
+        livroContagem[e.livro_id]++;
+      });
+      Object.keys(livroContagem).forEach(function(livroId) {
+        if (livroContagem[livroId] > 1) {
+          var livro = livrosCache.find(function(l) { return l.id === livroId; });
+          if (livro) livrosRepetidos.push(livro.titulo + ' (' + livroContagem[livroId] + 'x)');
+        }
+      });
+
+      if (livrosRepetidos.length) {
+        alertEl.innerHTML =
+          '<div class="profile-alert">' +
+          '<svg class="profile-alert__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>' +
+          '<div class="profile-alert__text">' + t('profileRepeatAlert') + ' ' + escapeHtml(livrosRepetidos.join(', ')) + '</div>' +
+          '</div>';
+      } else {
+        alertEl.innerHTML = '';
+      }
+
+      if (!emprestimos.length) {
+        timelineEl.innerHTML =
+          '<div class="empty-state">' +
+          '<div class="empty-state__icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg></div>' +
+          '<div class="empty-state__title">' + t('profileNoHistory') + '</div>' +
+          '<div class="empty-state__text">' + t('profileNoHistoryText') + '</div>' +
+          '</div>';
+        return;
+      }
+
+      var html = '<div class="profile-timeline">';
+      emprestimos.forEach(function(emp) {
+        var livro = livrosCache.find(function(l) { return l.id === emp.livro_id; });
+        var dataEmp = emp.data_emprestimo ? (emp.data_emprestimo.toDate ? emp.data_emprestimo.toDate() : new Date(emp.data_emprestimo)) : new Date();
+        var empStr = dataEmp.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+        var isRepeated = livroContagem[emp.livro_id] > 1;
+        var repeatedClass = isRepeated ? ' timeline-item--repeated' : '';
+        var activeClass = !emp.devolvido ? ' timeline-item--active' : '';
+
+        var statusHtml, iconClass, metaExtra = '';
+
+        if (emp.devolvido) {
+          iconClass = 'timeline-icon--returned';
+          statusHtml = '<span class="timeline-status timeline-status--returned">✓ ' + t('profileReturned') + '</span>';
+          if (emp.data_devolucao) {
+            var dataDev = emp.data_devolucao.toDate ? emp.data_devolucao.toDate() : new Date(emp.data_devolucao);
+            var dias = Math.max(1, Math.round((dataDev - dataEmp) / 86400000));
+            metaExtra = ' · ' + dias + ' ' + t('profileDays');
+          }
+        } else {
+          iconClass = 'timeline-icon--pending';
+          statusHtml = '<span class="timeline-status timeline-status--pending">⏳ ' + t('profilePendingStatus') + '</span>';
+          var diasPendente = Math.floor((new Date() - dataEmp) / 86400000);
+          metaExtra = ' · ' + diasPendente + ' ' + t('profileDays');
+        }
+
+        if (isRepeated) {
+          statusHtml += '<span class="timeline-status timeline-status--repeated">↻ ' + t('profileRepeated') + '</span>';
+        }
+
+        var iconSvg = emp.devolvido
+          ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>'
+          : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>';
+
+        html += '<div class="timeline-item' + activeClass + repeatedClass + '">' +
+          '<div class="timeline-icon ' + iconClass + '">' + iconSvg + '</div>' +
+          '<div class="timeline-info">' +
+          '<div class="timeline-book">' + (livro ? escapeHtml(livro.titulo) : '—') + '</div>' +
+          '<div class="timeline-meta">' + empStr + metaExtra + '</div>' +
+          '</div>' +
+          '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">' +
+          statusHtml +
+          '<span class="timeline-number">#' + (livro ? escapeHtml(String(livro.numero)) : '') + '</span>' +
+          '</div>' +
+          '</div>';
+      });
+      html += '</div>';
+      timelineEl.innerHTML = html;
+    })
+    .catch(function() {
+      timelineEl.innerHTML =
+        '<div class="empty-state"><div class="empty-state__text">' + t('errorLoadData') + '</div></div>';
+    });
+}
+
+document.getElementById('btn-perfil-voltar').addEventListener('click', function() {
+  navigateTo(screens.includes(previousScreen) ? previousScreen : 'inicio');
+});
+
+document.addEventListener('click', function(e) {
+  var el = e.target.closest('[data-perfil-aluno]');
+  if (!el) return;
+  var alunoId = el.dataset.perfilAluno;
+  if (alunoId) abrirPerfilAluno(alunoId);
+});
 
 
 /* ================================================================
