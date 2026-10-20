@@ -1,0 +1,3260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#059669">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="Controle de empréstimo de livros e tarefas de casa para escolas">
+  <title>Leitura em Dia</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap">
+
+<style>
+/* ================================================================
+   DESIGN SYSTEM — Leitura em Dia
+   ================================================================ */
+
+/* ── Paleta de Cores (Modo Claro) ── */
+:root {
+  --accent: #059669;
+  --accent-light: #ECFDF5;
+  --accent-hover: #047857;
+  --accent-surface: #D1FAE5;
+
+  --bg-primary: #F6F7FA;
+  --bg-secondary: #F9FAFB;
+  --bg-card: #FFFFFF;
+
+  --text-primary: #141520;
+  --text-secondary: #5E6070;
+  --text-muted: #9496A8;
+  --text-on-accent: #FFFFFF;
+
+  --border: #E4E5EC;
+  --border-light: #EEEEF3;
+  --border-focus: #059669;
+
+  --nav-bg: #FFFFFF;
+  --nav-border: #E4E5EC;
+
+  --success: #059669;
+  --warning: #D97706;
+  --warning-light: #FFFBEB;
+  --warning-surface: #FEF3C7;
+  --error: #DC2626;
+  --error-light: #FEF2F2;
+  --error-surface: #FECACA;
+  --info: #3B82F6;
+
+  --shadow-sm: 0 1px 3px rgba(20,21,32,0.05);
+  --shadow-md: 0 4px 16px rgba(20,21,32,0.07);
+  --shadow-lg: 0 8px 32px rgba(20,21,32,0.10);
+
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-xs: 6px;
+  --radius-full: 100px;
+
+  --font-display: 'Outfit', system-ui, sans-serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+}
+
+/* ── Modo Escuro (prefers-color-scheme) ── */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --accent: #34D399;
+    --accent-light: #132E1D;
+    --accent-hover: #6EE7B7;
+    --accent-surface: #064E3B;
+
+    --bg-primary: #1E2030;
+    --bg-secondary: #262A3D;
+    --bg-card: #262A3D;
+
+    --text-primary: #E8E9F0;
+    --text-secondary: #A0A2B4;
+    --text-muted: #7E809A;
+    --text-on-accent: #111827;
+
+    --border: #343750;
+    --border-light: #2C2F45;
+    --border-focus: #34D399;
+
+    --nav-bg: #1A1C2E;
+    --nav-border: #343750;
+
+    --warning: #FBBF24;
+    --warning-light: #362D12;
+    --warning-surface: #92400E;
+    --error: #F87171;
+    --error-light: #3A1515;
+    --error-surface: #991B1B;
+    --success: #34D399;
+
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.20);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.25);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.35);
+
+    color-scheme: dark;
+  }
+}
+
+/* ── Modo Escuro (forçado via data-theme) ── */
+:root[data-theme="dark"] {
+  --accent: #34D399;
+  --accent-light: #132E1D;
+  --accent-hover: #6EE7B7;
+  --accent-surface: #064E3B;
+
+  --bg-primary: #1E2030;
+  --bg-secondary: #262A3D;
+  --bg-card: #262A3D;
+
+  --text-primary: #E8E9F0;
+  --text-secondary: #A0A2B4;
+  --text-muted: #7E809A;
+  --text-on-accent: #111827;
+
+  --border: #343750;
+  --border-light: #2C2F45;
+  --border-focus: #34D399;
+
+  --nav-bg: #1A1C2E;
+  --nav-border: #343750;
+
+  --warning: #FBBF24;
+  --warning-light: #362D12;
+  --warning-surface: #92400E;
+  --error: #F87171;
+  --error-light: #3A1515;
+  --error-surface: #991B1B;
+  --success: #34D399;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.20);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.25);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.35);
+
+  color-scheme: dark;
+}
+
+
+/* ================================================================
+   BASE & RESET
+   ================================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  max-width: 640px;
+  margin-inline: auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  z-index: 10;
+  background: var(--bg-primary);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  margin: 0;
+}
+
+a { color: var(--accent); text-decoration: none; }
+
+button { font-family: inherit; }
+
+img { max-width: 100%; display: block; }
+
+[hidden] { display: none !important; }
+
+
+/* ================================================================
+   APP SHELL
+   ================================================================ */
+.screen {
+  padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+  padding-block-start: 8px;
+  animation: screenFadeIn 0.2s ease;
+}
+
+@keyframes screenFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.screen-header {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  background: var(--bg-primary);
+  z-index: 5;
+  padding-block: 16px 12px;
+}
+
+.screen-title {
+  font-size: 1.625rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+
+/* ================================================================
+   HEADER — INÍCIO
+   ================================================================ */
+.header-home {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: 16px 8px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo__icon {
+  width: 38px;
+  height: 38px;
+  background: var(--accent);
+  border-radius: var(--radius-sm);
+  display: grid;
+  place-items: center;
+  color: #fff;
+}
+
+.logo__text {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background: var(--accent-light);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+
+
+/* ================================================================
+   WEEK BADGE
+   ================================================================ */
+.week-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--accent-light);
+  color: var(--accent);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  margin-bottom: 20px;
+}
+
+
+/* ================================================================
+   STAT CARDS
+   ================================================================ */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 16px 14px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
+}
+
+.stat-card__value {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.stat-card__label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+  line-height: 1.3;
+}
+
+.stat-card--accent .stat-card__value { color: var(--accent); }
+.stat-card--warning .stat-card__value { color: var(--warning); }
+
+
+/* ================================================================
+   CARDS
+   ================================================================ */
+.card {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 18px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
+}
+
+
+/* ================================================================
+   SECTION TITLE
+   ================================================================ */
+.section-title {
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 12px;
+}
+
+
+/* ================================================================
+   QUICK ACTIONS
+   ================================================================ */
+.quick-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: var(--shadow-sm);
+  text-align: left;
+}
+
+.action-btn:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.action-btn:active { transform: translateY(0); }
+
+.action-btn__icon {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-sm);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.action-btn__icon--green { background: var(--accent-light); color: var(--accent); }
+.action-btn__icon--amber { background: var(--warning-light); color: var(--warning); }
+
+.action-btn__label {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--text-primary);
+}
+
+.action-btn__desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+
+/* ================================================================
+   ACTIVITY FEED
+   ================================================================ */
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.activity-item:last-child { border-bottom: none; }
+
+.activity-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+.activity-dot--green { background: var(--accent); }
+.activity-dot--amber { background: var(--warning); }
+.activity-dot--red { background: var(--error); }
+
+.activity-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.activity-text strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.activity-time {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+
+/* ================================================================
+   CHIPS (FILTRO DE TURMA)
+   ================================================================ */
+.chips-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 16px;
+  padding-bottom: 4px;
+}
+
+.chips-row::-webkit-scrollbar { display: none; }
+
+.chip {
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.chip--active {
+  background: var(--accent);
+  color: var(--text-on-accent);
+  border-color: var(--accent);
+}
+
+
+/* ================================================================
+   FORM ELEMENTS
+   ================================================================ */
+.input-group {
+  position: relative;
+  margin-bottom: 14px;
+}
+
+.input-group label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  display: block;
+}
+
+.input-group input,
+.input-group select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+}
+
+.input-group input::placeholder { color: var(--text-muted); }
+
+
+/* ================================================================
+   BUTTONS
+   ================================================================ */
+.btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px 24px;
+  background: var(--accent);
+  color: var(--text-on-accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-primary:hover { background: var(--accent-hover); }
+.btn-primary:active { transform: scale(0.98); }
+
+.btn-outline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: transparent;
+  color: var(--accent);
+  border: 1.5px solid var(--accent);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-outline:hover { background: var(--accent-light); }
+
+
+/* ================================================================
+   QR SCAN BUTTON (DESABILITADO)
+   ================================================================ */
+.qr-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--bg-primary);
+  border: 1.5px dashed var(--border);
+  border-radius: var(--radius-sm);
+  cursor: default;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  margin-bottom: 14px;
+}
+
+.qr-btn__badge {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background: var(--accent-light);
+  color: var(--accent);
+}
+
+
+/* ================================================================
+   STUDENT LIST
+   ================================================================ */
+.student-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.student-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.12s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.student-item:hover { background: var(--accent-light); }
+.student-item--selected { background: var(--accent-light); border: 1.5px solid var(--accent); }
+.student-item--has-loan { opacity: 0.6; }
+.student-item--has-loan .student-pending-badge { display: inline-flex; }
+
+.student-pending-badge {
+  display: none;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background: var(--warning-light);
+  color: var(--warning);
+  white-space: nowrap;
+}
+
+.loan-record {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.loan-record:last-child { border-bottom: none; }
+
+.loan-record__icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-light);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.loan-record__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.loan-record__student {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.loan-record__detail {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary--loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.student-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+.student-avatar--c1 { background: #DBEAFE; color: #2563EB; }
+.student-avatar--c2 { background: #FCE7F3; color: #DB2777; }
+.student-avatar--c3 { background: #FEF3C7; color: #D97706; }
+.student-avatar--c4 { background: #E0E7FF; color: #4F46E5; }
+
+.student-name {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+
+/* ================================================================
+   CONFERÊNCIA — CHECKLIST
+   ================================================================ */
+.check-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.check-item--checked .check-box {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.check-item--missing {
+  background: var(--error-light);
+  border-color: var(--error-surface);
+}
+
+.check-item--missing .check-box { border-color: var(--error); }
+.check-item--missing .check-book { color: var(--error); }
+.check-item--missing .check-student { color: var(--error); opacity: 0.8; }
+
+.check-box {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 2px solid var(--border);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.check-info { flex: 1; min-width: 0; }
+
+.check-book {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.check-student {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.check-number {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.conf-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-light);
+  margin-top: 16px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.conf-summary__returned { color: var(--accent); }
+.conf-summary__missing { color: var(--error); font-weight: 600; }
+
+.check-item--overdue {
+  border-color: var(--warning-surface);
+  background: var(--warning-light);
+}
+
+.check-item--overdue .check-student { color: var(--warning); }
+
+.overdue-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background: var(--warning-surface);
+  color: var(--warning);
+  white-space: nowrap;
+}
+
+
+/* ================================================================
+   TABS (CADASTROS)
+   ================================================================ */
+.tab-bar {
+  display: flex;
+  gap: 4px;
+  background: var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+  margin-bottom: 16px;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+  border: none;
+  background: transparent;
+}
+
+.tab--active {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+}
+
+
+/* ================================================================
+   CLASS CARD (TURMAS)
+   ================================================================ */
+.class-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  margin-bottom: 10px;
+  box-shadow: var(--shadow-sm);
+}
+
+.class-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+.class-icon--c1 { background: #DBEAFE; color: #2563EB; }
+.class-icon--c2 { background: #FCE7F3; color: #DB2777; }
+.class-icon--c3 { background: #FEF3C7; color: #D97706; }
+.class-icon--c4 { background: #E0E7FF; color: #4F46E5; }
+
+.class-info { flex: 1; }
+.class-name { font-weight: 600; font-size: 0.9375rem; }
+.class-detail { font-size: 0.8125rem; color: var(--text-muted); }
+
+.class-count {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+
+/* ================================================================
+   BOOK LIST
+   ================================================================ */
+.book-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.book-item:last-child { border-bottom: none; }
+
+.book-num {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--accent-light);
+  padding: 4px 10px;
+  border-radius: var(--radius-xs);
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.book-info { flex: 1; min-width: 0; }
+
+.book-title {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.book-author {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+
+/* ================================================================
+   RECENT LENDING
+   ================================================================ */
+.recent-lending {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-light);
+  font-size: 0.875rem;
+}
+
+.recent-lending:last-child { border-bottom: none; }
+
+
+/* ================================================================
+   INFO BANNER
+   ================================================================ */
+.info-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  background: var(--accent-light);
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+
+/* ================================================================
+   UPLOAD AREA (TAREFA DE CASA)
+   ================================================================ */
+.upload-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 40px 24px;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.upload-area:hover {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+
+.upload-area__icon {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  background: var(--accent-light);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+}
+
+.upload-area__text {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.upload-area__hint {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.upload-area--has-preview {
+  padding: 16px;
+  border-style: solid;
+  border-color: var(--accent);
+}
+
+.upload-area--has-preview img {
+  border-radius: var(--radius-sm);
+  max-height: 240px;
+  object-fit: contain;
+}
+
+.upload-area--uploading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.upload-progress {
+  width: 100%;
+  height: 4px;
+  background: var(--border-light);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.upload-progress__bar {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.tarefa-card {
+  display: flex;
+  gap: 12px;
+  padding: 14px;
+  border-bottom: 1px solid var(--border-light);
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.tarefa-card:last-child { border-bottom: none; }
+.tarefa-card:hover { background: var(--accent-light); }
+
+.tarefa-card__thumb {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--bg-secondary);
+}
+
+.tarefa-card__info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}
+
+.tarefa-card__date {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.tarefa-card__meta {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.tarefa-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0,0,0,0.9);
+  display: grid;
+  place-items: center;
+  cursor: zoom-out;
+  animation: screenFadeIn 0.2s ease;
+}
+
+.tarefa-fullscreen img {
+  max-width: 95%;
+  max-height: 90vh;
+  object-fit: contain;
+}
+
+.tarefa-fullscreen__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background: rgba(255,255,255,0.15);
+  color: white;
+  border: none;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+
+/* ================================================================
+   EMPTY STATE
+   ================================================================ */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 48px 24px;
+}
+
+.empty-state__icon {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-full);
+  background: var(--accent-light);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+  margin-bottom: 20px;
+}
+
+.empty-state__title {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.empty-state__text {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  max-width: 280px;
+  line-height: 1.5;
+}
+
+
+/* ================================================================
+   FAB (FLOATING ACTION BUTTON)
+   ================================================================ */
+.fab {
+  position: fixed;
+  bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+  right: max(20px, calc((100vw - 640px) / 2 + 20px));
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-full);
+  background: var(--accent);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  box-shadow: var(--shadow-lg);
+  cursor: pointer;
+  z-index: 10;
+  transition: transform 0.15s ease;
+  border: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.fab:hover { transform: scale(1.08); }
+.fab:active { transform: scale(0.95); }
+
+
+/* ================================================================
+   TOAST NOTIFICATION
+   ================================================================ */
+.toast {
+  position: fixed;
+  bottom: calc(100px + env(safe-area-inset-bottom, 0px));
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--text-primary);
+  color: var(--bg-primary);
+  padding: 12px 24px;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: var(--shadow-lg);
+  z-index: 30;
+  transition: transform 0.3s ease;
+  pointer-events: none;
+  max-width: calc(100vw - 32px);
+  text-align: center;
+}
+
+.toast--visible {
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast--success { background: var(--success); color: #fff; }
+.toast--error { background: var(--error); color: #fff; }
+
+
+/* ================================================================
+   BOTTOM NAVIGATION
+   ================================================================ */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--nav-bg);
+  border-top: 1px solid var(--nav-border);
+  display: flex;
+  justify-content: center;
+  z-index: 15;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.bottom-nav__inner {
+  display: flex;
+  width: 100%;
+  max-width: 640px;
+  padding-left: max(8px, env(safe-area-inset-left, 0px));
+  padding-right: max(8px, env(safe-area-inset-right, 0px));
+}
+
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 10px 4px 8px;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+  background: none;
+  border: none;
+}
+
+.nav-item:hover { color: var(--text-secondary); }
+.nav-item--active { color: var(--accent); }
+
+.nav-item svg {
+  width: 22px;
+  height: 22px;
+}
+
+.nav-item__label {
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+
+/* ================================================================
+   LOADING SPINNER
+   ================================================================ */
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+
+/* ================================================================
+   MODAL
+   ================================================================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.modal-overlay--visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal {
+  background: var(--bg-card);
+  border-radius: var(--radius) var(--radius) 0 0;
+  width: 100%;
+  max-width: 640px;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 24px;
+  padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.modal-overlay--visible .modal {
+  transform: translateY(0);
+}
+
+.modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.modal__title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.modal__close {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: var(--bg-secondary);
+  border: none;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: all 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.modal__close:hover {
+  background: var(--error-light);
+  color: var(--error);
+}
+
+.modal__actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.modal__actions .btn-primary { flex: 1; }
+
+.btn-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 24px;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-secondary:hover { background: var(--border-light); }
+
+
+/* ================================================================
+   LIST ITEM ACTIONS
+   ================================================================ */
+.list-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.btn-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-xs);
+  border: none;
+  background: transparent;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: all 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-icon:hover { background: var(--bg-secondary); color: var(--text-primary); }
+.btn-icon--danger:hover { background: var(--error-light); color: var(--error); }
+
+
+/* ================================================================
+   UTILITIES
+   ================================================================ */
+.mb-8 { margin-bottom: 8px; }
+.mb-12 { margin-bottom: 12px; }
+.mb-16 { margin-bottom: 16px; }
+.mb-20 { margin-bottom: 20px; }
+.mb-24 { margin-bottom: 24px; }
+.mt-16 { margin-top: 16px; }
+.mt-24 { margin-top: 24px; }
+
+/* ================================================================
+   THEME TOGGLE
+   ================================================================ */
+.theme-toggle {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  padding: 0;
+}
+
+.theme-toggle:hover {
+  background: var(--accent-light);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.theme-toggle__icon { display: block; }
+.theme-toggle__sun { display: none; }
+
+:root[data-theme="dark"] .theme-toggle__moon { display: none; }
+:root[data-theme="dark"] .theme-toggle__sun { display: block; }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-toggle__moon { display: none; }
+  :root:not([data-theme="light"]) .theme-toggle__sun { display: block; }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .screen { animation: none; }
+  .toast { transition: none; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ════════════════════════════════════════════════════════════════
+     TELA 1: INÍCIO
+     ════════════════════════════════════════════════════════════════ -->
+<section id="screen-inicio" class="screen">
+  <div class="header-home">
+    <div class="logo">
+      <div class="logo__icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+      </div>
+      <span class="logo__text" data-i18n="appName">Leitura em Dia</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <button class="theme-toggle" id="theme-toggle" aria-label="Alternar tema">
+        <svg class="theme-toggle__icon theme-toggle__moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="theme-toggle__icon theme-toggle__sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
+      <div class="avatar" id="user-avatar">LD</div>
+    </div>
+  </div>
+
+  <div class="week-badge" id="week-badge">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    <span data-i18n="weekBadge">Semana</span>
+  </div>
+
+  <div class="chips-row" id="chips-inicio">
+    <button class="chip chip--active" data-turma="todas" data-i18n="allClasses">Todas</button>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card stat-card--accent">
+      <div class="stat-card__value" id="stat-emprestimos">0</div>
+      <div class="stat-card__label" data-i18n="weeklyLoans">Empréstimos da semana</div>
+    </div>
+    <div class="stat-card stat-card--warning">
+      <div class="stat-card__value" id="stat-pendentes">0</div>
+      <div class="stat-card__label" data-i18n="pendingReturns">Devoluções pendentes</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__value" id="stat-acervo">0</div>
+      <div class="stat-card__label" data-i18n="totalBooks">Livros no acervo</div>
+    </div>
+  </div>
+
+  <div class="quick-actions">
+    <div class="action-btn" role="button" tabindex="0" data-navigate="emprestimo">
+      <div class="action-btn__icon action-btn__icon--green">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      </div>
+      <div>
+        <div class="action-btn__label" data-i18n="newLoan">Novo Empréstimo</div>
+        <div class="action-btn__desc" data-i18n="newLoanDesc">Registrar saída de livro</div>
+      </div>
+    </div>
+    <div class="action-btn" role="button" tabindex="0" data-navigate="conferencia">
+      <div class="action-btn__icon action-btn__icon--amber">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      </div>
+      <div>
+        <div class="action-btn__label" data-i18n="checkBasket">Conferir Cesta</div>
+        <div class="action-btn__desc" data-i18n="checkBasketDesc">Verificar devoluções</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title" data-i18n="recentActivity">Atividade recente</div>
+  <div class="card">
+    <div class="activity-list" id="activity-list">
+      <div class="empty-state">
+        <div class="empty-state__icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
+        </div>
+        <div class="empty-state__title" data-i18n="noActivityTitle">Nenhuma atividade ainda</div>
+        <div class="empty-state__text" data-i18n="noActivityText">Cadastre turmas e alunos para começar a registrar empréstimos</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════════
+     TELA 2: EMPRÉSTIMO
+     ════════════════════════════════════════════════════════════════ -->
+<section id="screen-emprestimo" class="screen" hidden>
+  <div class="screen-header">
+    <h1 class="screen-title" data-i18n="loanTitle">Empréstimo</h1>
+  </div>
+
+  <div class="section-title" data-i18n="selectClass">Selecione a turma</div>
+  <div class="chips-row" id="chips-emprestimo"></div>
+
+  <div class="section-title" data-i18n="selectStudent">Selecione o aluno</div>
+  <div class="input-group mb-12">
+    <input type="text" id="search-aluno" aria-label="Buscar aluno" data-i18n-placeholder="searchStudent" placeholder="Buscar aluno...">
+  </div>
+  <div class="card mb-20">
+    <div class="student-list" id="student-list-emprestimo">
+      <div class="empty-state">
+        <div class="empty-state__icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+        <div class="empty-state__title" data-i18n="noStudentsTitle">Nenhum aluno cadastrado</div>
+        <div class="empty-state__text" data-i18n="noStudentsText">Vá em Cadastros para adicionar turmas e alunos</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title" data-i18n="bookLabel">Livro</div>
+  <div class="input-group">
+    <input type="text" id="input-livro-numero" aria-label="Número do livro" data-i18n-placeholder="bookNumber" placeholder="Número do livro (ex: 146A)">
+  </div>
+
+  <div class="qr-btn">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="3" height="3"/><line x1="20" y1="14" x2="20" y2="20"/><line x1="14" y1="20" x2="20" y2="20"/></svg>
+    <span data-i18n="scanQR">Escanear QR Code</span>
+    <span class="qr-btn__badge" data-i18n="comingSoon">Em breve</span>
+  </div>
+
+  <button class="btn-primary" type="button" id="btn-registrar-emprestimo">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+    <span data-i18n="registerLoan">Registrar Empréstimo</span>
+  </button>
+
+  <div class="mt-24">
+    <div class="section-title" data-i18n="recentRecords">Últimos registros</div>
+    <div class="card">
+      <div id="recent-emprestimos">
+        <div class="empty-state">
+          <div class="empty-state__text" data-i18n="noRecentLoans">Nenhum empréstimo registrado ainda</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════════
+     TELA 3: CONFERÊNCIA DA CESTA
+     ════════════════════════════════════════════════════════════════ -->
+<section id="screen-conferencia" class="screen" hidden>
+  <div class="screen-header">
+    <h1 class="screen-title" data-i18n="checkTitle">Conferência da Cesta</h1>
+  </div>
+
+  <div class="section-title" data-i18n="selectClass">Selecione a turma</div>
+  <div class="chips-row" id="chips-conferencia"></div>
+
+  <div id="conferencia-content">
+    <div class="empty-state">
+      <div class="empty-state__icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      </div>
+      <div class="empty-state__title" data-i18n="selectClassFirst">Selecione uma turma acima</div>
+    </div>
+  </div>
+
+  <div id="conferencia-summary" hidden></div>
+
+  <button class="btn-primary mt-24" type="button" id="btn-confirmar-devolucoes" hidden>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 11l3 3L22 4"/></svg>
+    <span data-i18n="confirmReturns">Confirmar Devoluções</span>
+  </button>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════════
+     TELA 4: CADASTROS
+     ════════════════════════════════════════════════════════════════ -->
+<section id="screen-cadastros" class="screen" hidden>
+  <div class="screen-header">
+    <h1 class="screen-title" data-i18n="registryTitle">Cadastros</h1>
+  </div>
+
+  <div class="tab-bar" id="tab-bar-cadastros">
+    <button class="tab tab--active" data-tab="turmas" data-i18n="classesTab">Turmas</button>
+    <button class="tab" data-tab="alunos" data-i18n="studentsTab">Alunos</button>
+    <button class="tab" data-tab="livros" data-i18n="booksTab">Livros</button>
+  </div>
+
+  <!-- Tab: Turmas -->
+  <div id="tab-turmas">
+    <div id="turmas-list">
+      <div class="empty-state">
+        <div class="empty-state__icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div class="empty-state__title" data-i18n="noClassesTitle">Nenhuma turma cadastrada</div>
+        <div class="empty-state__text" data-i18n="noClassesText">Toque no botão + para cadastrar sua primeira turma</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: Alunos -->
+  <div id="tab-alunos" hidden>
+    <div class="chips-row" id="chips-alunos"></div>
+    <div class="input-group mb-16">
+      <input type="text" id="search-aluno-cadastro" aria-label="Buscar aluno" data-i18n-placeholder="searchStudent" placeholder="Buscar aluno...">
+    </div>
+    <div class="card">
+      <div class="student-list" id="student-list-cadastros">
+        <div class="empty-state">
+          <div class="empty-state__icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          </div>
+          <div class="empty-state__title" data-i18n="noStudentsTitle">Nenhum aluno cadastrado</div>
+          <div class="empty-state__text" data-i18n="noStudentsRegText">Cadastre turmas primeiro, depois adicione alunos a cada uma</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: Livros -->
+  <div id="tab-livros" hidden>
+    <div class="chips-row" id="chips-livros">
+      <button class="chip chip--active" data-serie="todas">Todos</button>
+      <button class="chip" data-serie="3">3º Ano</button>
+      <button class="chip" data-serie="5">5º Ano</button>
+    </div>
+    <div class="input-group mb-16">
+      <input type="text" id="search-livro-cadastro" aria-label="Buscar livro" data-i18n-placeholder="searchBook" placeholder="Buscar livro...">
+    </div>
+    <div class="card" id="books-list-container">
+      <div class="empty-state">
+        <div class="empty-state__icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+        </div>
+        <div class="empty-state__title" data-i18n="noBooksTitle">Nenhum livro cadastrado</div>
+        <div class="empty-state__text" data-i18n="noBooksText">Toque no botão + para cadastrar livros no acervo</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAB do Cadastros -->
+<button class="fab" id="fab-cadastros" hidden aria-label="Adicionar">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+</button>
+
+
+<!-- ════════════════════════════════════════════════════════════════
+     TELA 5: TAREFA DE CASA
+     ════════════════════════════════════════════════════════════════ -->
+<section id="screen-tarefa" class="screen" hidden>
+  <div class="screen-header">
+    <h1 class="screen-title" data-i18n="homeworkTitle">Tarefa de Casa</h1>
+  </div>
+
+  <div class="section-title" data-i18n="selectSeries">Selecione a série</div>
+  <div class="chips-row" id="chips-tarefa">
+    <button class="chip chip--active" data-serie="3" data-i18n="series3">3º Ano</button>
+    <button class="chip" data-serie="5" data-i18n="series5">5º Ano</button>
+  </div>
+
+  <div class="upload-area" id="upload-tarefa" role="button" tabindex="0">
+    <div class="upload-area__icon">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+    </div>
+    <div class="upload-area__text" data-i18n="uploadPhoto">Tirar foto ou selecionar imagem</div>
+    <div class="upload-area__hint" data-i18n="uploadHint">A imagem será comprimida automaticamente</div>
+  </div>
+  <input type="file" id="input-tarefa-foto" accept="image/*" capture="environment" hidden>
+  <div id="tarefa-preview" hidden></div>
+
+  <button class="btn-primary mt-24" type="button" id="btn-salvar-tarefa" hidden>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+    <span data-i18n="save">Salvar</span>
+  </button>
+
+  <div class="mt-24">
+    <div class="section-title" data-i18n="recentHomework">Tarefas recentes</div>
+    <div id="tarefa-timeline">
+      <div class="empty-state">
+        <div class="empty-state__icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </div>
+        <div class="empty-state__title" data-i18n="noHomeworkTitle">Nenhuma tarefa registrada</div>
+        <div class="empty-state__text" data-i18n="noHomeworkText">Tire uma foto da tarefa de casa para registrar</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════════
+     TOAST DE NOTIFICAÇÃO
+     ════════════════════════════════════════════════════════════════ -->
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+
+<!-- ════════════════════════════════════════════════════════════════
+     MODAL GENÉRICO
+     ════════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal__header">
+      <h2 class="modal__title" id="modal-title"></h2>
+      <button class="modal__close" id="modal-close" aria-label="Fechar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div id="modal-body"></div>
+    <div class="modal__actions">
+      <button class="btn-secondary" id="modal-cancel" type="button">Cancelar</button>
+      <button class="btn-primary" id="modal-save" type="button">Salvar</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════════════
+     BOTTOM NAVIGATION
+     ════════════════════════════════════════════════════════════════ -->
+<nav class="bottom-nav" aria-label="Navegação principal">
+  <div class="bottom-nav__inner">
+    <button class="nav-item nav-item--active" data-screen="inicio" aria-label="Início" aria-current="page">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span class="nav-item__label" data-i18n="navHome">Início</span>
+    </button>
+    <button class="nav-item" data-screen="emprestimo" aria-label="Empréstimo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><path d="M12 6v7l4 2"/></svg>
+      <span class="nav-item__label" data-i18n="navLoan">Empréstimo</span>
+    </button>
+    <button class="nav-item" data-screen="conferencia" aria-label="Conferência">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      <span class="nav-item__label" data-i18n="navCheck">Conferência</span>
+    </button>
+    <button class="nav-item" data-screen="cadastros" aria-label="Cadastros">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      <span class="nav-item__label" data-i18n="navRegistry">Cadastros</span>
+    </button>
+    <button class="nav-item" data-screen="tarefa" aria-label="Tarefa de Casa">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      <span class="nav-item__label" data-i18n="navHomework">Tarefa</span>
+    </button>
+  </div>
+</nav>
+
+
+<!-- ════════════════════════════════════════════════════════════════
+     FIREBASE SDK (v10.12.2 — compat)
+     ════════════════════════════════════════════════════════════════ -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="firebase-config.js"></script>
+
+<script>
+/* ================================================================
+   FIREBASE — INICIALIZAÇÃO
+   ================================================================ */
+firebase.initializeApp(firebaseConfig);
+var db = firebase.firestore();
+var storage = firebase.storage();
+var auth = firebase.auth();
+
+
+/* ================================================================
+   i18n — INTERNACIONALIZAÇÃO
+   ================================================================ */
+const i18n = {
+  pt: {
+    appName: 'Leitura em Dia',
+    weekBadge: 'Semana',
+    allClasses: 'Todas',
+    weeklyLoans: 'Empréstimos da semana',
+    pendingReturns: 'Devoluções pendentes',
+    totalBooks: 'Livros no acervo',
+    newLoan: 'Novo Empréstimo',
+    newLoanDesc: 'Registrar saída de livro',
+    checkBasket: 'Conferir Cesta',
+    checkBasketDesc: 'Verificar devoluções',
+    recentActivity: 'Atividade recente',
+    noActivityTitle: 'Nenhuma atividade ainda',
+    noActivityText: 'Cadastre turmas e alunos para começar a registrar empréstimos',
+    loanTitle: 'Empréstimo',
+    selectClass: 'Selecione a turma',
+    selectStudent: 'Selecione o aluno',
+    searchStudent: 'Buscar aluno...',
+    searchBook: 'Buscar livro...',
+    bookLabel: 'Livro',
+    bookNumber: 'Número do livro (ex: 146A)',
+    scanQR: 'Escanear QR Code',
+    comingSoon: 'Em breve',
+    registerLoan: 'Registrar Empréstimo',
+    recentRecords: 'Últimos registros',
+    noRecentLoans: 'Nenhum empréstimo registrado ainda',
+    noStudentsTitle: 'Nenhum aluno cadastrado',
+    noStudentsText: 'Vá em Cadastros para adicionar turmas e alunos',
+    noStudentsRegText: 'Cadastre turmas primeiro, depois adicione alunos a cada uma',
+    checkTitle: 'Conferência da Cesta',
+    noCheckTitle: 'Nenhum empréstimo ativo',
+    noCheckText: 'Quando houver livros emprestados, eles aparecerão aqui para conferência',
+    registryTitle: 'Cadastros',
+    classesTab: 'Turmas',
+    studentsTab: 'Alunos',
+    booksTab: 'Livros',
+    noClassesTitle: 'Nenhuma turma cadastrada',
+    noClassesText: 'Toque no botão + para cadastrar sua primeira turma',
+    noBooksTitle: 'Nenhum livro cadastrado',
+    noBooksText: 'Toque no botão + para cadastrar livros no acervo',
+    homeworkTitle: 'Tarefa de Casa',
+    selectSeries: 'Selecione a série',
+    series3: '3º Ano',
+    series5: '5º Ano',
+    uploadPhoto: 'Tirar foto ou selecionar imagem',
+    uploadHint: 'A imagem será comprimida automaticamente',
+    recentHomework: 'Tarefas recentes',
+    noHomeworkTitle: 'Nenhuma tarefa registrada',
+    noHomeworkText: 'Tire uma foto da tarefa de casa para registrar',
+    navHome: 'Início',
+    navLoan: 'Empréstimo',
+    navCheck: 'Conferência',
+    navRegistry: 'Cadastros',
+    navHomework: 'Tarefa',
+    add: 'Adicionar',
+    returned: 'devolvidos',
+    pending: 'pendentes',
+    confirm: 'Confirmar',
+    cancel: 'Cancelar',
+    save: 'Salvar',
+    delete: 'Excluir',
+    edit: 'Editar',
+    toastSuccess: 'Operação realizada com sucesso',
+    toastError: 'Erro ao realizar operação',
+    toggleTheme: 'Alternar tema',
+    className: 'Nome da turma',
+    seriesLabel: 'Série',
+    schoolYear: 'Ano letivo',
+    studentName: 'Nome do aluno',
+    classLabel: 'Turma',
+    bookTitleLabel: 'Título do livro',
+    bookNumberLabel: 'Número',
+    selectClassPlaceholder: 'Selecione a turma',
+    newClass: 'Nova Turma',
+    editClass: 'Editar Turma',
+    newStudent: 'Novo Aluno',
+    editStudent: 'Editar Aluno',
+    newBook: 'Novo Livro',
+    editBook: 'Editar Livro',
+    classCreated: 'Turma cadastrada',
+    classUpdated: 'Turma atualizada',
+    studentCreated: 'Aluno cadastrado',
+    studentUpdated: 'Aluno atualizado',
+    bookCreated: 'Livro cadastrado',
+    bookUpdated: 'Livro atualizado',
+    deleteSuccess: 'Excluído com sucesso',
+    confirmDelete: 'Confirmar exclusão',
+    confirmDeleteMsg: 'Tem certeza que deseja excluir',
+    deleteClassWarning: 'Os alunos dessa turma não serão excluídos.',
+    errorClassName: 'Informe o nome da turma',
+    errorStudentName: 'Informe o nome do aluno',
+    errorSelectClass: 'Selecione a turma',
+    errorBookTitle: 'Informe o título do livro',
+    errorBookNumber: 'Informe o número do livro',
+    errorDuplicateBook: 'Já existe um livro nº',
+    errorLoadData: 'Erro ao carregar dados',
+    noFilterResults: 'Nenhum resultado encontrado',
+    errorSelectStudent: 'Selecione um aluno',
+    errorEnterBook: 'Informe o número do livro',
+    errorBookNotFound: 'Livro não encontrado no acervo desta série',
+    errorBookUnavailable: 'Este livro já está emprestado',
+    errorStudentHasLoan: 'Este aluno já possui um livro pendente',
+    loanRegistered: 'Empréstimo registrado com sucesso',
+    loanError: 'Erro ao registrar empréstimo',
+    studentHasBook: 'Livro pendente',
+    selectClassFirst: 'Selecione uma turma acima',
+    loanBook: 'Livro',
+    loanDate: 'Emprestado em',
+    today: 'Hoje',
+    yesterday: 'Ontem',
+    confirmReturns: 'Confirmar Devoluções',
+    returnSuccess: 'Devoluções registradas com sucesso',
+    returnError: 'Erro ao registrar devoluções',
+    noReturnsSelected: 'Nenhum livro marcado para devolução',
+    overdueLabel: 'Atrasado',
+    daysAgo: 'dias',
+    conferenciaSummary: 'devolvidos',
+    conferenciaPending: 'pendentes',
+    homeworkSaved: 'Tarefa registrada com sucesso',
+    homeworkError: 'Erro ao registrar tarefa',
+    homeworkSelectPhoto: 'Selecione uma foto primeiro',
+    homeworkWeek: 'Semana',
+    homeworkUploading: 'Enviando...',
+    homeworkChangePhoto: 'Trocar foto'
+  }
+};
+
+const currentLang = 'pt';
+
+function t(key) {
+  return i18n[currentLang][key] || key;
+}
+
+
+/* ================================================================
+   NAVEGAÇÃO SPA
+   ================================================================ */
+const screens = ['inicio', 'emprestimo', 'conferencia', 'cadastros', 'tarefa'];
+let currentScreen = 'inicio';
+
+function navigateTo(screen) {
+  if (!screens.includes(screen) || screen === currentScreen) return;
+
+  screens.forEach(function(s) {
+    var el = document.getElementById('screen-' + s);
+    if (el) el.hidden = s !== screen;
+  });
+
+  document.querySelectorAll('.nav-item').forEach(function(nav) {
+    var isActive = nav.dataset.screen === screen;
+    nav.classList.toggle('nav-item--active', isActive);
+    if (isActive) {
+      nav.setAttribute('aria-current', 'page');
+    } else {
+      nav.removeAttribute('aria-current');
+    }
+  });
+
+  var fab = document.getElementById('fab-cadastros');
+  if (fab) fab.hidden = screen !== 'cadastros';
+
+  currentScreen = screen;
+  window.scrollTo(0, 0);
+}
+
+document.querySelector('.bottom-nav').addEventListener('click', function(e) {
+  var navItem = e.target.closest('.nav-item');
+  if (navItem && navItem.dataset.screen) {
+    navigateTo(navItem.dataset.screen);
+  }
+});
+
+document.querySelectorAll('[data-navigate]').forEach(function(el) {
+  el.addEventListener('click', function() {
+    navigateTo(el.dataset.navigate);
+  });
+  el.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      navigateTo(el.dataset.navigate);
+    }
+  });
+});
+
+
+/* ================================================================
+   CHIPS — SELEÇÃO GENÉRICA
+   ================================================================ */
+function setupChips(containerId, callback) {
+  var container = document.getElementById(containerId);
+  if (!container) return;
+
+  container.addEventListener('click', function(e) {
+    var chip = e.target.closest('.chip');
+    if (!chip) return;
+
+    container.querySelectorAll('.chip').forEach(function(c) {
+      c.classList.remove('chip--active');
+    });
+    chip.classList.add('chip--active');
+
+    if (callback) callback(chip);
+  });
+}
+
+setupChips('chips-inicio', function(chip) {
+  // Futuro: filtrar stats e atividades por turma
+});
+
+/* chips-emprestimo: configurado no bloco de empréstimo abaixo */
+
+/* chips-conferencia: configurado no bloco de conferência abaixo */
+
+/* chips-tarefa: configurado no bloco de tarefa de casa abaixo */
+
+setupChips('chips-alunos', function(chip) {
+  filtroAlunoTurma = chip.dataset.turma;
+  renderAlunos();
+});
+
+setupChips('chips-livros', function(chip) {
+  filtroLivroSerie = chip.dataset.serie;
+  renderLivros();
+});
+
+
+/* ================================================================
+   TABS — CADASTROS
+   ================================================================ */
+var tabBar = document.getElementById('tab-bar-cadastros');
+if (tabBar) {
+  tabBar.addEventListener('click', function(e) {
+    var tab = e.target.closest('.tab');
+    if (!tab) return;
+
+    tabBar.querySelectorAll('.tab').forEach(function(t) {
+      t.classList.remove('tab--active');
+    });
+    tab.classList.add('tab--active');
+
+    var tabName = tab.dataset.tab;
+    currentCadastroTab = tabName;
+    ['turmas', 'alunos', 'livros'].forEach(function(t) {
+      var el = document.getElementById('tab-' + t);
+      if (el) el.hidden = t !== tabName;
+    });
+  });
+}
+
+
+/* upload-tarefa: handler configurado no bloco de tarefa de casa abaixo */
+
+
+/* ================================================================
+   TOAST — NOTIFICAÇÕES
+   ================================================================ */
+function showToast(message, type) {
+  var toast = document.getElementById('toast');
+  if (!toast) return;
+
+  toast.textContent = message;
+  toast.className = 'toast';
+  if (type === 'success') toast.classList.add('toast--success');
+  if (type === 'error') toast.classList.add('toast--error');
+
+  requestAnimationFrame(function() {
+    toast.classList.add('toast--visible');
+  });
+
+  setTimeout(function() {
+    toast.classList.remove('toast--visible');
+  }, 3000);
+}
+
+
+/* ================================================================
+   WEEK BADGE — DATA ATUAL
+   ================================================================ */
+function updateWeekBadge() {
+  var badge = document.getElementById('week-badge');
+  if (!badge) return;
+
+  var now = new Date();
+  var startOfYear = new Date(now.getFullYear(), 0, 1);
+  var days = Math.floor((now - startOfYear) / 86400000);
+  var weekNum = Math.ceil((days + startOfYear.getDay() + 1) / 7);
+
+  var monday = new Date(now);
+  monday.setDate(now.getDate() - ((now.getDay() + 6) % 7));
+  var friday = new Date(monday);
+  friday.setDate(monday.getDate() + 4);
+
+  var months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+  var dateStr = monday.getDate() + '–' + friday.getDate() + ' ' + months[monday.getMonth()] + ' ' + now.getFullYear();
+
+  var span = badge.querySelector('span');
+  if (span) span.textContent = 'Semana ' + weekNum + ' · ' + dateStr;
+}
+
+updateWeekBadge();
+
+
+/* ================================================================
+   UTILITÁRIOS — ESCAPE HTML
+   ================================================================ */
+function escapeHtml(str) {
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function escapeAttr(str) {
+  return String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+
+/* ================================================================
+   FIREBASE — CACHE E CRUD
+   ================================================================ */
+var turmasCache = [];
+var alunosCache = [];
+var livrosCache = [];
+var turmasCores = ['c1', 'c2', 'c3', 'c4'];
+var currentCadastroTab = 'turmas';
+
+function corTurma(index) {
+  return turmasCores[index % turmasCores.length];
+}
+
+function carregarTurmas() {
+  return db.collection('turmas').orderBy('nome').get().then(function(snap) {
+    turmasCache = [];
+    snap.forEach(function(doc) {
+      turmasCache.push(Object.assign({ id: doc.id }, doc.data()));
+    });
+    return turmasCache;
+  });
+}
+
+function salvarTurma(dados, id) {
+  if (id) return db.collection('turmas').doc(id).update(dados);
+  return db.collection('turmas').add(dados);
+}
+
+function excluirTurma(id) {
+  return db.collection('turmas').doc(id).delete();
+}
+
+function carregarAlunos() {
+  return db.collection('alunos').orderBy('nome').get().then(function(snap) {
+    alunosCache = [];
+    snap.forEach(function(doc) {
+      alunosCache.push(Object.assign({ id: doc.id }, doc.data()));
+    });
+    return alunosCache;
+  });
+}
+
+function salvarAluno(dados, id) {
+  if (id) return db.collection('alunos').doc(id).update(dados);
+  dados.ativo = true;
+  return db.collection('alunos').add(dados);
+}
+
+function excluirAluno(id) {
+  return db.collection('alunos').doc(id).delete();
+}
+
+function carregarLivros() {
+  return db.collection('livros').orderBy('numero').get().then(function(snap) {
+    livrosCache = [];
+    snap.forEach(function(doc) {
+      livrosCache.push(Object.assign({ id: doc.id }, doc.data()));
+    });
+    return livrosCache;
+  });
+}
+
+function salvarLivro(dados, id) {
+  if (id) return db.collection('livros').doc(id).update(dados);
+  dados.disponivel = true;
+  return db.collection('livros').add(dados);
+}
+
+function excluirLivro(id) {
+  return db.collection('livros').doc(id).delete();
+}
+
+
+/* ================================================================
+   MODAL — GERENCIAMENTO
+   ================================================================ */
+var modalOverlay = document.getElementById('modal-overlay');
+var modalTitle = document.getElementById('modal-title');
+var modalBody = document.getElementById('modal-body');
+var modalSave = document.getElementById('modal-save');
+var modalCancel = document.getElementById('modal-cancel');
+var modalCloseBtn = document.getElementById('modal-close');
+var currentModalSave = null;
+
+function openModal(title, bodyHtml, onSave) {
+  modalTitle.textContent = title;
+  modalBody.innerHTML = bodyHtml;
+  currentModalSave = onSave;
+  modalSave.textContent = t('save');
+  modalSave.style.background = '';
+  modalOverlay.classList.add('modal-overlay--visible');
+  var firstInput = modalBody.querySelector('input, select');
+  if (firstInput) setTimeout(function() { firstInput.focus(); }, 200);
+}
+
+function closeModal() {
+  modalOverlay.classList.remove('modal-overlay--visible');
+  currentModalSave = null;
+}
+
+if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
+if (modalCancel) modalCancel.addEventListener('click', closeModal);
+if (modalOverlay) {
+  modalOverlay.addEventListener('click', function(e) {
+    if (e.target === modalOverlay) closeModal();
+  });
+}
+if (modalSave) {
+  modalSave.addEventListener('click', function() {
+    if (currentModalSave) currentModalSave();
+  });
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && modalOverlay && modalOverlay.classList.contains('modal-overlay--visible')) {
+    closeModal();
+  }
+});
+
+
+/* ================================================================
+   FORMULÁRIOS — BUILDERS
+   ================================================================ */
+function formTurma(dados) {
+  dados = dados || {};
+  return '<div class="input-group">' +
+    '<label for="modal-turma-nome">' + t('className') + '</label>' +
+    '<input type="text" id="modal-turma-nome" placeholder="Ex: 3º Ano A" value="' + escapeAttr(dados.nome || '') + '">' +
+    '</div>' +
+    '<div class="input-group">' +
+    '<label for="modal-turma-serie">' + t('seriesLabel') + '</label>' +
+    '<select id="modal-turma-serie">' +
+    '<option value="3"' + (dados.serie === '3' ? ' selected' : '') + '>3º Ano</option>' +
+    '<option value="5"' + (dados.serie === '5' ? ' selected' : '') + '>5º Ano</option>' +
+    '</select>' +
+    '</div>' +
+    '<div class="input-group">' +
+    '<label for="modal-turma-ano">' + t('schoolYear') + '</label>' +
+    '<input type="number" id="modal-turma-ano" value="' + (dados.ano_letivo || new Date().getFullYear()) + '">' +
+    '</div>';
+}
+
+function formAluno(dados) {
+  dados = dados || {};
+  var options = '<option value="">' + t('selectClassPlaceholder') + '</option>';
+  turmasCache.forEach(function(turma) {
+    var sel = dados.turma_id === turma.id ? ' selected' : '';
+    options += '<option value="' + turma.id + '"' + sel + '>' + escapeHtml(turma.nome) + '</option>';
+  });
+  return '<div class="input-group">' +
+    '<label for="modal-aluno-nome">' + t('studentName') + '</label>' +
+    '<input type="text" id="modal-aluno-nome" placeholder="Ex: Maria Silva" value="' + escapeAttr(dados.nome || '') + '">' +
+    '</div>' +
+    '<div class="input-group">' +
+    '<label for="modal-aluno-turma">' + t('classLabel') + '</label>' +
+    '<select id="modal-aluno-turma">' + options + '</select>' +
+    '</div>';
+}
+
+function formLivro(dados) {
+  dados = dados || {};
+  return '<div class="input-group">' +
+    '<label for="modal-livro-titulo">' + t('bookTitleLabel') + '</label>' +
+    '<input type="text" id="modal-livro-titulo" placeholder="Ex: O Pequeno Príncipe" value="' + escapeAttr(dados.titulo || '') + '">' +
+    '</div>' +
+    '<div class="input-group">' +
+    '<label for="modal-livro-numero">' + t('bookNumberLabel') + '</label>' +
+    '<input type="text" id="modal-livro-numero" placeholder="Ex: 146A" value="' + escapeAttr(dados.numero || '') + '">' +
+    '</div>' +
+    '<div class="input-group">' +
+    '<label for="modal-livro-serie">' + t('seriesLabel') + '</label>' +
+    '<select id="modal-livro-serie">' +
+    '<option value="3"' + (dados.serie === '3' || !dados.serie ? ' selected' : '') + '>3º Ano</option>' +
+    '<option value="5"' + (dados.serie === '5' ? ' selected' : '') + '>5º Ano</option>' +
+    '</select>' +
+    '</div>';
+}
+
+
+/* ================================================================
+   RENDERIZAÇÃO — TURMAS
+   ================================================================ */
+function renderTurmas() {
+  var container = document.getElementById('turmas-list');
+  if (!container) return;
+  if (!turmasCache.length) {
+    container.innerHTML =
+      '<div class="empty-state">' +
+      '<div class="empty-state__icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>' +
+      '<div class="empty-state__title">' + t('noClassesTitle') + '</div>' +
+      '<div class="empty-state__text">' + t('noClassesText') + '</div>' +
+      '</div>';
+    return;
+  }
+  var html = '';
+  turmasCache.forEach(function(turma, i) {
+    var cor = corTurma(i);
+    var count = alunosCache.filter(function(a) { return a.turma_id === turma.id; }).length;
+    html += '<div class="class-card">' +
+      '<div class="class-icon class-icon--' + cor + '">' + escapeHtml(turma.nome.charAt(0)) + turma.serie + '</div>' +
+      '<div class="class-info">' +
+      '<div class="class-name">' + escapeHtml(turma.nome) + '</div>' +
+      '<div class="class-detail">' + turma.ano_letivo + ' · Série ' + turma.serie + '</div>' +
+      '</div>' +
+      '<div class="class-count">' + count + ' alunos</div>' +
+      '<div class="list-actions">' +
+      '<button class="btn-icon" data-action="editar-turma" data-id="' + turma.id + '" aria-label="Editar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>' +
+      '<button class="btn-icon btn-icon--danger" data-action="excluir-turma" data-id="' + turma.id + '" data-nome="' + escapeAttr(turma.nome) + '" aria-label="Excluir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>' +
+      '</div></div>';
+  });
+  container.innerHTML = html;
+}
+
+
+/* ================================================================
+   RENDERIZAÇÃO — ALUNOS
+   ================================================================ */
+var filtroAlunoTurma = 'todas';
+var filtroAlunoBusca = '';
+
+function renderAlunos() {
+  var container = document.getElementById('student-list-cadastros');
+  if (!container) return;
+  var filtered = alunosCache.filter(function(a) {
+    if (filtroAlunoTurma !== 'todas' && a.turma_id !== filtroAlunoTurma) return false;
+    if (filtroAlunoBusca && a.nome.toLowerCase().indexOf(filtroAlunoBusca.toLowerCase()) === -1) return false;
+    return true;
+  });
+  if (!filtered.length) {
+    var msg = alunosCache.length ? t('noFilterResults') : t('noStudentsRegText');
+    container.innerHTML =
+      '<div class="empty-state">' +
+      '<div class="empty-state__icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>' +
+      '<div class="empty-state__title">' + t('noStudentsTitle') + '</div>' +
+      '<div class="empty-state__text">' + msg + '</div>' +
+      '</div>';
+    return;
+  }
+  var html = '';
+  filtered.forEach(function(aluno) {
+    var turma = turmasCache.find(function(t) { return t.id === aluno.turma_id; });
+    var turmaIndex = turmasCache.indexOf(turma);
+    var cor = corTurma(turmaIndex >= 0 ? turmaIndex : 0);
+    var initials = aluno.nome.split(' ').map(function(w) { return w.charAt(0); }).slice(0, 2).join('').toUpperCase();
+    html += '<div class="student-item">' +
+      '<div class="student-avatar student-avatar--' + cor + '">' + escapeHtml(initials) + '</div>' +
+      '<div style="flex:1;min-width:0">' +
+      '<div class="student-name">' + escapeHtml(aluno.nome) + '</div>' +
+      '<div style="font-size:0.75rem;color:var(--text-muted)">' + (turma ? escapeHtml(turma.nome) : '') + '</div>' +
+      '</div>' +
+      '<div class="list-actions">' +
+      '<button class="btn-icon" data-action="editar-aluno" data-id="' + aluno.id + '" aria-label="Editar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>' +
+      '<button class="btn-icon btn-icon--danger" data-action="excluir-aluno" data-id="' + aluno.id + '" data-nome="' + escapeAttr(aluno.nome) + '" aria-label="Excluir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>' +
+      '</div></div>';
+  });
+  container.innerHTML = html;
+}
+
+function renderChipsAlunos() {
+  var container = document.getElementById('chips-alunos');
+  if (!container) return;
+  var html = '<button class="chip' + (filtroAlunoTurma === 'todas' ? ' chip--active' : '') + '" data-turma="todas">' + t('allClasses') + '</button>';
+  turmasCache.forEach(function(turma) {
+    html += '<button class="chip' + (filtroAlunoTurma === turma.id ? ' chip--active' : '') + '" data-turma="' + turma.id + '">' + escapeHtml(turma.nome) + '</button>';
+  });
+  container.innerHTML = html;
+}
+
+
+/* ================================================================
+   RENDERIZAÇÃO — LIVROS
+   ================================================================ */
+var filtroLivroSerie = 'todas';
+var filtroLivroBusca = '';
+
+function renderLivros() {
+  var container = document.getElementById('books-list-container');
+  if (!container) return;
+  var filtered = livrosCache.filter(function(l) {
+    if (filtroLivroSerie !== 'todas' && l.serie !== filtroLivroSerie) return false;
+    if (filtroLivroBusca) {
+      var busca = filtroLivroBusca.toLowerCase();
+      return l.titulo.toLowerCase().indexOf(busca) !== -1 || String(l.numero).indexOf(busca) !== -1;
+    }
+    return true;
+  });
+  if (!filtered.length) {
+    var msg = livrosCache.length ? t('noFilterResults') : t('noBooksText');
+    container.innerHTML =
+      '<div class="empty-state">' +
+      '<div class="empty-state__icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg></div>' +
+      '<div class="empty-state__title">' + t('noBooksTitle') + '</div>' +
+      '<div class="empty-state__text">' + msg + '</div>' +
+      '</div>';
+    return;
+  }
+  var html = '';
+  filtered.forEach(function(livro) {
+    var numStr = String(livro.numero).toUpperCase();
+    html += '<div class="book-item">' +
+      '<div class="book-num">#' + numStr + '</div>' +
+      '<div class="book-info">' +
+      '<div class="book-title">' + escapeHtml(livro.titulo) + '</div>' +
+      '<div class="book-author">' + livro.serie + 'º Ano</div>' +
+      '</div>' +
+      '<div class="list-actions">' +
+      '<button class="btn-icon" data-action="editar-livro" data-id="' + livro.id + '" aria-label="Editar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>' +
+      '<button class="btn-icon btn-icon--danger" data-action="excluir-livro" data-id="' + livro.id + '" data-nome="' + escapeAttr(livro.titulo) + '" aria-label="Excluir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>' +
+      '</div></div>';
+  });
+  container.innerHTML = html;
+}
+
+
+/* ================================================================
+   AÇÕES — CADASTRO (ABRIR FORMULÁRIOS)
+   ================================================================ */
+function abrirFormTurma(id) {
+  var dados = id ? turmasCache.find(function(t) { return t.id === id; }) : null;
+  var titulo = id ? t('editClass') : t('newClass');
+  openModal(titulo, formTurma(dados || {}), function() {
+    var nome = document.getElementById('modal-turma-nome').value.trim();
+    var serie = document.getElementById('modal-turma-serie').value;
+    var ano = parseInt(document.getElementById('modal-turma-ano').value);
+    if (!nome) { showToast(t('errorClassName'), 'error'); return; }
+    salvarTurma({ nome: nome, serie: serie, ano_letivo: ano }, id).then(function() {
+      closeModal();
+      showToast(id ? t('classUpdated') : t('classCreated'), 'success');
+      recarregarDados();
+    }).catch(function() { showToast(t('toastError'), 'error'); });
+  });
+}
+
+function abrirFormAluno(id) {
+  var dados = id ? alunosCache.find(function(a) { return a.id === id; }) : null;
+  var titulo = id ? t('editStudent') : t('newStudent');
+  openModal(titulo, formAluno(dados || {}), function() {
+    var nome = document.getElementById('modal-aluno-nome').value.trim();
+    var turmaId = document.getElementById('modal-aluno-turma').value;
+    if (!nome) { showToast(t('errorStudentName'), 'error'); return; }
+    if (!turmaId) { showToast(t('errorSelectClass'), 'error'); return; }
+    salvarAluno({ nome: nome, turma_id: turmaId }, id).then(function() {
+      closeModal();
+      showToast(id ? t('studentUpdated') : t('studentCreated'), 'success');
+      recarregarDados();
+    }).catch(function() { showToast(t('toastError'), 'error'); });
+  });
+}
+
+function abrirFormLivro(id) {
+  var dados = id ? livrosCache.find(function(l) { return l.id === id; }) : null;
+  var titulo = id ? t('editBook') : t('newBook');
+  openModal(titulo, formLivro(dados || {}), function() {
+    var tituloLivro = document.getElementById('modal-livro-titulo').value.trim();
+    var numero = document.getElementById('modal-livro-numero').value.trim().toUpperCase();
+    var serie = document.getElementById('modal-livro-serie').value;
+    if (!tituloLivro) { showToast(t('errorBookTitle'), 'error'); return; }
+    if (!numero) { showToast(t('errorBookNumber'), 'error'); return; }
+    var dup = livrosCache.find(function(l) { return l.numero.toUpperCase() === numero && l.serie === serie && l.id !== id; });
+    if (dup) { showToast(t('errorDuplicateBook') + ' ' + numero + ' (' + serie + 'º Ano)', 'error'); return; }
+    salvarLivro({ titulo: tituloLivro, numero: numero, serie: serie }, id).then(function() {
+      closeModal();
+      showToast(id ? t('bookUpdated') : t('bookCreated'), 'success');
+      recarregarDados();
+    }).catch(function() { showToast(t('toastError'), 'error'); });
+  });
+}
+
+function confirmarExclusao(tipo, id, nome) {
+  var labels = { turma: 'a turma', aluno: 'o aluno', livro: 'o livro' };
+  var aviso = tipo === 'turma' ? '<p style="color:var(--error);font-size:0.8125rem;margin-top:8px">' + t('deleteClassWarning') + '</p>' : '';
+  openModal(t('confirmDelete'),
+    '<p style="color:var(--text-secondary);font-size:0.9375rem;margin:0">' + t('confirmDeleteMsg') + ' ' + labels[tipo] + ' <strong>' + escapeHtml(nome) + '</strong>?</p>' + aviso,
+    function() {
+      var fn = tipo === 'turma' ? excluirTurma : tipo === 'aluno' ? excluirAluno : excluirLivro;
+      fn(id).then(function() {
+        closeModal();
+        showToast(t('deleteSuccess'), 'success');
+        recarregarDados();
+      }).catch(function() { showToast(t('toastError'), 'error'); });
+    }
+  );
+  modalSave.textContent = t('delete');
+  modalSave.style.background = 'var(--error)';
+}
+
+
+/* ================================================================
+   EVENT DELEGATION — AÇÕES NAS LISTAS
+   ================================================================ */
+document.getElementById('screen-cadastros').addEventListener('click', function(e) {
+  var btn = e.target.closest('[data-action]');
+  if (!btn) return;
+  var action = btn.dataset.action;
+  var id = btn.dataset.id;
+  var nome = btn.dataset.nome;
+  if (action === 'editar-turma') abrirFormTurma(id);
+  else if (action === 'excluir-turma') confirmarExclusao('turma', id, nome);
+  else if (action === 'editar-aluno') abrirFormAluno(id);
+  else if (action === 'excluir-aluno') confirmarExclusao('aluno', id, nome);
+  else if (action === 'editar-livro') abrirFormLivro(id);
+  else if (action === 'excluir-livro') confirmarExclusao('livro', id, nome);
+});
+
+
+/* ================================================================
+   FAB — BOTÃO FLUTUANTE
+   ================================================================ */
+document.getElementById('fab-cadastros').addEventListener('click', function() {
+  if (currentCadastroTab === 'turmas') abrirFormTurma();
+  else if (currentCadastroTab === 'alunos') abrirFormAluno();
+  else abrirFormLivro();
+});
+
+
+/* ================================================================
+   BUSCA — INPUTS DE PESQUISA
+   ================================================================ */
+var searchAlunoCadastro = document.getElementById('search-aluno-cadastro');
+if (searchAlunoCadastro) {
+  searchAlunoCadastro.addEventListener('input', function() {
+    filtroAlunoBusca = this.value;
+    renderAlunos();
+  });
+}
+
+var searchLivroCadastro = document.getElementById('search-livro-cadastro');
+if (searchLivroCadastro) {
+  searchLivroCadastro.addEventListener('input', function() {
+    filtroLivroBusca = this.value;
+    renderLivros();
+  });
+}
+
+
+/* ================================================================
+   DADOS — CARREGAMENTO INICIAL
+   ================================================================ */
+function recarregarDados() {
+  Promise.all([carregarTurmas(), carregarAlunos(), carregarLivros(), carregarEmprestimos()]).then(function() {
+    renderTurmas();
+    renderAlunos();
+    renderLivros();
+    renderChipsAlunos();
+    renderChipsInicio();
+    renderChipsEmprestimo();
+    renderStudentsEmprestimo();
+    renderRecentEmprestimos();
+    renderChipsConferencia();
+    renderConferencia();
+    renderActivityHome();
+    atualizarStats();
+  }).catch(function() {
+    showToast(t('errorLoadData'), 'error');
+  });
+}
+
+function renderChipsInicio() {
+  var container = document.getElementById('chips-inicio');
+  if (!container) return;
+  var html = '<button class="chip chip--active" data-turma="todas">' + t('allClasses') + '</button>';
+  turmasCache.forEach(function(turma) {
+    html += '<button class="chip" data-turma="' + turma.id + '">' + escapeHtml(turma.nome) + '</button>';
+  });
+  container.innerHTML = html;
+}
+
+function atualizarStats() {
+  var elAcervo = document.getElementById('stat-acervo');
+  if (elAcervo) elAcervo.textContent = livrosCache.length;
+
+  var empSemana = emprestimosCache.length;
+  var elEmprestimos = document.getElementById('stat-emprestimos');
+  if (elEmprestimos) elEmprestimos.textContent = empSemana;
+
+  var pendentes = emprestimosCache.filter(function(e) { return !e.devolvido; }).length;
+  var elPendentes = document.getElementById('stat-pendentes');
+  if (elPendentes) elPendentes.textContent = pendentes;
+}
+
+function renderActivityHome() {
+  var container = document.getElementById('activity-list');
+  if (!container) return;
+
+  db.collection('emprestimos').orderBy('data_emprestimo', 'desc').limit(5).get().then(function(snap) {
+    if (snap.empty) {
+      container.innerHTML =
+        '<div class="empty-state">' +
+        '<div class="empty-state__icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg></div>' +
+        '<div class="empty-state__title">' + t('noActivityTitle') + '</div>' +
+        '<div class="empty-state__text">' + t('noActivityText') + '</div>' +
+        '</div>';
+      return;
+    }
+    var html = '';
+    snap.forEach(function(doc) {
+      var emp = doc.data();
+      var aluno = alunosCache.find(function(a) { return a.id === emp.aluno_id; });
+      var livro = livrosCache.find(function(l) { return l.id === emp.livro_id; });
+      var data = emp.data_emprestimo ? emp.data_emprestimo.toDate() : new Date();
+      var dataStr = formatDateRelative(data);
+
+      html += '<div class="loan-record">' +
+        '<div class="loan-record__icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg></div>' +
+        '<div class="loan-record__info">' +
+        '<div class="loan-record__student">' + escapeHtml(aluno ? aluno.nome : '—') + '</div>' +
+        '<div class="loan-record__detail">' + t('loanBook') + ' ' + (livro ? escapeHtml(livro.numero) : '—') + ' · ' + dataStr + '</div>' +
+        '</div>' +
+        '<span class="student-pending-badge" style="display:inline-flex;background:' + (emp.devolvido ? 'var(--accent-light)' : 'var(--warning-light)') + ';color:' + (emp.devolvido ? 'var(--accent)' : 'var(--warning)') + '">' + (emp.devolvido ? '✓' : '⏳') + '</span>' +
+        '</div>';
+    });
+    container.innerHTML = html;
+  });
+}
+
+recarregarDados();
+
+
+/* ================================================================
+   EMPRÉSTIMO — LÓGICA COMPLETA
+   ================================================================ */
+var emprestimosCache = [];
+var emprestimoTurmaSelecionada = null;
+var emprestimoAlunoSelecionado = null;
+
+function carregarEmprestimos() {
+  return db.collection('emprestimos').where('devolvido', '==', false).get().then(function(snap) {
+    emprestimosCache = [];
+    snap.forEach(function(doc) {
+      emprestimosCache.push(Object.assign({ id: doc.id }, doc.data()));
+    });
+    return emprestimosCache;
+  });
+}
+
+function renderChipsEmprestimo() {
+  var container = document.getElementById('chips-emprestimo');
+  if (!container) return;
+  var html = '';
+  turmasCache.forEach(function(turma, i) {
+    var active = emprestimoTurmaSelecionada === turma.id ? ' chip--active' : '';
+    html += '<button class="chip' + active + '" data-turma="' + turma.id + '">' + escapeHtml(turma.nome) + '</button>';
+  });
+  container.innerHTML = html;
+}
+
+function renderStudentsEmprestimo() {
+  var container = document.getElementById('student-list-emprestimo');
+  if (!container) return;
+
+  if (!emprestimoTurmaSelecionada) {
+    container.innerHTML =
+      '<div class="empty-state">' +
+      '<div class="empty-state__icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>' +
+      '<div class="empty-state__title">' + t('selectClassFirst') + '</div>' +
+      '</div>';
+    return;
+  }
+
+  var searchVal = (document.getElementById('search-aluno') || {}).value || '';
+  var alunos = alunosCache.filter(function(a) {
+    if (a.turma_id !== emprestimoTurmaSelecionada) return false;
+    if (searchVal && a.nome.toLowerCase().indexOf(searchVal.toLowerCase()) === -1) return false;
+    return true;
+  });
+
+  if (!alunos.length) {
+    container.innerHTML =
+      '<div class="empty-state">' +
+      '<div class="empty-state__icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>' +
+      '<div class="empty-state__title">' + t('noStudentsTitle') + '</div>' +
+      '</div>';
+    return;
+  }
+
+  var html = '';
+  alunos.forEach(function(aluno) {
+    var turma = turmasCache.find(function(t) { return t.id === aluno.turma_id; });
+    var turmaIndex = turmasCache.indexOf(turma);
+    var cor = corTurma(turmaIndex >= 0 ? turmaIndex : 0);
+    var initials = aluno.nome.split(' ').map(function(w) { return w.charAt(0); }).slice(0, 2).join('').toUpperCase();
+    var pendente = emprestimosCache.find(function(e) { return e.aluno_id === aluno.id && !e.devolvido; });
+    var selected = emprestimoAlunoSelecionado === aluno.id ? ' student-item--selected' : '';
+    var hasLoan = pendente ? ' student-item--has-loan' : '';
+    var livroP = pendente ? livrosCache.find(function(l) { return l.id === pendente.livro_id; }) : null;
+    var badgeText = livroP ? t('studentHasBook') + ': ' + livroP.numero : '';
+
+    html += '<div class="student-item' + selected + hasLoan + '" data-aluno-id="' + aluno.id + '">' +
+      '<div class="student-avatar student-avatar--' + cor + '">' + escapeHtml(initials) + '</div>' +
+      '<div style="flex:1;min-width:0">' +
+      '<div class="student-name">' + escapeHtml(aluno.nome) + '</div>' +
+      (badgeText ? '<span class="student-pending-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>' + escapeHtml(badgeText) + '</span>' : '') +
+      '</div></div>';
+  });
+  container.innerHTML = html;
+}
+
+function renderRecentEmprestimos() {
+  var container = document.getElementById('recent-emprestimos');
+  if (!container) return;
+
+  db.collection('emprestimos').orderBy('data_emprestimo', 'desc').limit(10).get().then(function(snap) {
+    if (snap.empty) {
+      container.innerHTML =
+        '<div class="empty-state">' +
+        '<div class="empty-state__text">' + t('noRecentLoans') + '</div>' +
+        '</div>';
+      return;
+    }
+    var html = '';
+    snap.forEach(function(doc) {
+      var emp = doc.data();
+      var aluno = alunosCache.find(function(a) { return a.id === emp.aluno_id; });
+      var livro = livrosCache.find(function(l) { return l.id === emp.livro_id; });
+      var data = emp.data_emprestimo ? emp.data_emprestimo.toDate() : new Date();
+      var dataStr = formatDateRelative(data);
+      var status = emp.devolvido ? '✓ Devolvido' : '⏳ Pendente';
+
+      html += '<div class="loan-record">' +
+        '<div class="loan-record__icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg></div>' +
+        '<div class="loan-record__info">' +
+        '<div class="loan-record__student">' + escapeHtml(aluno ? aluno.nome : '—') + '</div>' +
+        '<div class="loan-record__detail">' + t('loanBook') + ' ' + (livro ? escapeHtml(livro.numero) : '—') + ' · ' + dataStr + '</div>' +
+        '</div>' +
+        '<span class="student-pending-badge" style="display:inline-flex;background:' + (emp.devolvido ? 'var(--accent-light)' : 'var(--warning-light)') + ';color:' + (emp.devolvido ? 'var(--accent)' : 'var(--warning)') + '">' + status + '</span>' +
+        '</div>';
+    });
+    container.innerHTML = html;
+  });
+}
+
+function formatDateRelative(date) {
+  var now = new Date();
+  var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  var target = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  var diff = today - target;
+  if (diff === 0) return t('today');
+  if (diff === 86400000) return t('yesterday');
+  return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+}
+
+function registrarEmprestimo() {
+  if (!emprestimoAlunoSelecionado) {
+    showToast(t('errorSelectStudent'), 'error');
+    return;
+  }
+
+  var inputNumero = document.getElementById('input-livro-numero');
+  var numero = inputNumero.value.trim().toUpperCase();
+  if (!numero) {
+    showToast(t('errorEnterBook'), 'error');
+    return;
+  }
+
+  var turma = turmasCache.find(function(t) { return t.id === emprestimoTurmaSelecionada; });
+  if (!turma) return;
+
+  var livro = livrosCache.find(function(l) {
+    return l.numero.toUpperCase() === numero && l.serie === turma.serie;
+  });
+
+  if (!livro) {
+    showToast(t('errorBookNotFound'), 'error');
+    return;
+  }
+
+  if (!livro.disponivel) {
+    showToast(t('errorBookUnavailable'), 'error');
+    return;
+  }
+
+  var pendente = emprestimosCache.find(function(e) {
+    return e.aluno_id === emprestimoAlunoSelecionado && !e.devolvido;
+  });
+  if (pendente) {
+    showToast(t('errorStudentHasLoan'), 'error');
+    return;
+  }
+
+  var btn = document.getElementById('btn-registrar-emprestimo');
+  btn.classList.add('btn-primary--loading');
+  btn.disabled = true;
+
+  var batch = db.batch();
+  var empRef = db.collection('emprestimos').doc();
+  batch.set(empRef, {
+    aluno_id: emprestimoAlunoSelecionado,
+    livro_id: livro.id,
+    turma_id: emprestimoTurmaSelecionada,
+    data_emprestimo: firebase.firestore.FieldValue.serverTimestamp(),
+    data_devolucao: null,
+    devolvido: false
+  });
+  batch.update(db.collection('livros').doc(livro.id), { disponivel: false });
+
+  batch.commit().then(function() {
+    showToast(t('loanRegistered'), 'success');
+    inputNumero.value = '';
+    emprestimoAlunoSelecionado = null;
+    return Promise.all([carregarEmprestimos(), carregarLivros()]);
+  }).then(function() {
+    renderStudentsEmprestimo();
+    renderRecentEmprestimos();
+    renderLivros();
+    atualizarStats();
+  }).catch(function() {
+    showToast(t('loanError'), 'error');
+  }).finally(function() {
+    btn.classList.remove('btn-primary--loading');
+    btn.disabled = false;
+  });
+}
+
+setupChips('chips-emprestimo', function(chip) {
+  emprestimoTurmaSelecionada = chip.dataset.turma;
+  emprestimoAlunoSelecionado = null;
+  renderStudentsEmprestimo();
+});
+
+document.getElementById('student-list-emprestimo').addEventListener('click', function(e) {
+  var item = e.target.closest('.student-item');
+  if (!item) return;
+  var alunoId = item.dataset.alunoId;
+  if (!alunoId) return;
+  var pendente = emprestimosCache.find(function(emp) { return emp.aluno_id === alunoId && !emp.devolvido; });
+  if (pendente) {
+    showToast(t('errorStudentHasLoan'), 'error');
+    return;
+  }
+  emprestimoAlunoSelecionado = alunoId;
+  renderStudentsEmprestimo();
+  document.getElementById('input-livro-numero').focus();
+});
+
+document.getElementById('btn-registrar-emprestimo').addEventListener('click', registrarEmprestimo);
+
+var searchAlunoEmprestimo = document.getElementById('search-aluno');
+if (searchAlunoEmprestimo) {
+  searchAlunoEmprestimo.addEventListener('input', function() {
+    renderStudentsEmprestimo();
+  });
+}
+
+
+/* ================================================================
+   TAREFA DE CASA — REGISTRO E TIMELINE
+   ================================================================ */
+var tarefaSerieSelecionada = '3';
+var tarefaImagemBlob = null;
+var tarefaPreviewUrl = null;
+
+function comprimirImagem(file) {
+  return new Promise(function(resolve) {
+    var img = new Image();
+    var url = URL.createObjectURL(file);
+    img.onload = function() {
+      URL.revokeObjectURL(url);
+      var MAX_W = 1200;
+      var w = img.width;
+      var h = img.height;
+      if (w > MAX_W) { h = h * MAX_W / w; w = MAX_W; }
+      var canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      canvas.toBlob(function(blob) { resolve(blob); }, 'image/jpeg', 0.7);
+    };
+    img.src = url;
+  });
+}
+
+function getWeekNumber() {
+  var now = new Date();
+  var startOfYear = new Date(now.getFullYear(), 0, 1);
+  var days = Math.floor((now - startOfYear) / 86400000);
+  return Math.ceil((days + startOfYear.getDay() + 1) / 7);
+}
+
+var inputTarefaFoto = document.getElementById('input-tarefa-foto');
+var uploadTarefa = document.getElementById('upload-tarefa');
+var btnSalvarTarefa = document.getElementById('btn-salvar-tarefa');
+
+if (uploadTarefa && inputTarefaFoto) {
+  uploadTarefa.addEventListener('click', function() { inputTarefaFoto.click(); });
+  uploadTarefa.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); inputTarefaFoto.click(); }
+  });
+}
+
+if (inputTarefaFoto) {
+  inputTarefaFoto.addEventListener('change', function() {
+    var file = this.files[0];
+    if (!file) return;
+
+    comprimirImagem(file).then(function(blob) {
+      tarefaImagemBlob = blob;
+      if (tarefaPreviewUrl) URL.revokeObjectURL(tarefaPreviewUrl);
+      tarefaPreviewUrl = URL.createObjectURL(blob);
+
+      uploadTarefa.classList.add('upload-area--has-preview');
+      uploadTarefa.innerHTML =
+        '<img src="' + tarefaPreviewUrl + '" alt="Preview da tarefa">' +
+        '<div class="upload-area__text">' + t('homeworkChangePhoto') + '</div>';
+
+      if (btnSalvarTarefa) btnSalvarTarefa.hidden = false;
+    });
+  });
+}
+
+setupChips('chips-tarefa', function(chip) {
+  tarefaSerieSelecionada = chip.dataset.serie;
+  renderTarefaTimeline();
+});
+
+function salvarTarefa() {
+  if (!tarefaImagemBlob) {
+    showToast(t('homeworkSelectPhoto'), 'error');
+    return;
+  }
+
+  var btn = btnSalvarTarefa;
+  btn.classList.add('btn-primary--loading');
+  btn.disabled = true;
+  uploadTarefa.classList.add('upload-area--uploading');
+
+  var semana = getWeekNumber();
+  var agora = new Date();
+  var path = 'tarefas/' + tarefaSerieSelecionada + '/' + agora.getFullYear() + '_sem' + semana + '_' + Date.now() + '.jpg';
+  var ref = storage.ref(path);
+
+  ref.put(tarefaImagemBlob).then(function(snapshot) {
+    return snapshot.ref.getDownloadURL();
+  }).then(function(url) {
+    return db.collection('tarefas_casa').add({
+      serie: tarefaSerieSelecionada,
+      data: firebase.firestore.FieldValue.serverTimestamp(),
+      imagem_url: url,
+      semana: semana,
+      ano: agora.getFullYear()
+    });
+  }).then(function() {
+    showToast(t('homeworkSaved'), 'success');
+    tarefaImagemBlob = null;
+    if (tarefaPreviewUrl) { URL.revokeObjectURL(tarefaPreviewUrl); tarefaPreviewUrl = null; }
+    inputTarefaFoto.value = '';
+    uploadTarefa.classList.remove('upload-area--has-preview');
+    uploadTarefa.innerHTML =
+      '<div class="upload-area__icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>' +
+      '<div class="upload-area__text">' + t('uploadPhoto') + '</div>' +
+      '<div class="upload-area__hint">' + t('uploadHint') + '</div>';
+    btn.hidden = true;
+    renderTarefaTimeline();
+  }).catch(function(err) {
+    showToast(t('homeworkError'), 'error');
+  }).finally(function() {
+    btn.classList.remove('btn-primary--loading');
+    btn.disabled = false;
+    uploadTarefa.classList.remove('upload-area--uploading');
+  });
+}
+
+if (btnSalvarTarefa) {
+  btnSalvarTarefa.addEventListener('click', salvarTarefa);
+}
+
+function renderTarefaTimeline() {
+  var container = document.getElementById('tarefa-timeline');
+  if (!container) return;
+
+  db.collection('tarefas_casa')
+    .where('serie', '==', tarefaSerieSelecionada)
+    .orderBy('data', 'desc')
+    .limit(20)
+    .get().then(function(snap) {
+      if (snap.empty) {
+        container.innerHTML =
+          '<div class="empty-state">' +
+          '<div class="empty-state__icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>' +
+          '<div class="empty-state__title">' + t('noHomeworkTitle') + '</div>' +
+          '<div class="empty-state__text">' + t('noHomeworkText') + '</div>' +
+          '</div>';
+        return;
+      }
+      var html = '';
+      snap.forEach(function(doc) {
+        var tarefa = doc.data();
+        var data = tarefa.data ? tarefa.data.toDate() : new Date();
+        var dataStr = data.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+        html += '<div class="tarefa-card" data-img-url="' + escapeAttr(tarefa.imagem_url) + '">' +
+          '<img class="tarefa-card__thumb" src="' + escapeAttr(tarefa.imagem_url) + '" alt="Tarefa" loading="lazy">' +
+          '<div class="tarefa-card__info">' +
+          '<div class="tarefa-card__date">' + dataStr + '</div>' +
+          '<div class="tarefa-card__meta">' + t('homeworkWeek') + ' ' + tarefa.semana + ' · ' + tarefa.serie + 'º Ano</div>' +
+          '</div></div>';
+      });
+      container.innerHTML = html;
+    });
+}
+
+document.getElementById('tarefa-timeline').addEventListener('click', function(e) {
+  var card = e.target.closest('.tarefa-card');
+  if (!card) return;
+  var imgUrl = card.dataset.imgUrl;
+  if (!imgUrl) return;
+
+  var overlay = document.createElement('div');
+  overlay.className = 'tarefa-fullscreen';
+  overlay.innerHTML =
+    '<button class="tarefa-fullscreen__close" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>' +
+    '<img src="' + escapeAttr(imgUrl) + '" alt="Tarefa em tela cheia">';
+  document.body.appendChild(overlay);
+
+  function fechar() { overlay.remove(); }
+  overlay.addEventListener('click', function(ev) {
+    if (ev.target === overlay || ev.target.closest('.tarefa-fullscreen__close')) fechar();
+  });
+  document.addEventListener('keydown', function handler(ev) {
+    if (ev.key === 'Escape') { fechar(); document.removeEventListener('keydown', handler); }
+  });
+});
+
+renderTarefaTimeline();
+
+
+/* ================================================================
+   CONFERÊNCIA DA CESTA — DEVOLUÇÃO EM LOTE
+   ================================================================ */
+var conferenciaTurmaSelecionada = null;
+var conferenciaDevolvidos = {};
+
+function renderChipsConferencia() {
+  var container = document.getElementById('chips-conferencia');
+  if (!container) return;
+  var html = '';
+  turmasCache.forEach(function(turma) {
+    var active = conferenciaTurmaSelecionada === turma.id ? ' chip--active' : '';
+    html += '<button class="chip' + active + '" data-turma="' + turma.id + '">' + escapeHtml(turma.nome) + '</button>';
+  });
+  container.innerHTML = html;
+}
+
+function renderConferencia() {
+  var content = document.getElementById('conferencia-content');
+  var summary = document.getElementById('conferencia-summary');
+  var btnConfirmar = document.getElementById('btn-confirmar-devolucoes');
+  if (!content) return;
+
+  if (!conferenciaTurmaSelecionada) {
+    content.innerHTML =
+      '<div class="empty-state">' +
+      '<div class="empty-state__icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>' +
+      '<div class="empty-state__title">' + t('selectClassFirst') + '</div>' +
+      '</div>';
+    if (summary) summary.hidden = true;
+    if (btnConfirmar) btnConfirmar.hidden = true;
+    return;
+  }
+
+  var pendentes = emprestimosCache.filter(function(e) {
+    return e.turma_id === conferenciaTurmaSelecionada && !e.devolvido;
+  });
+
+  if (!pendentes.length) {
+    content.innerHTML =
+      '<div class="empty-state">' +
+      '<div class="empty-state__icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>' +
+      '<div class="empty-state__title">' + t('noCheckTitle') + '</div>' +
+      '<div class="empty-state__text">' + t('noCheckText') + '</div>' +
+      '</div>';
+    if (summary) summary.hidden = true;
+    if (btnConfirmar) btnConfirmar.hidden = true;
+    return;
+  }
+
+  var now = new Date();
+  var html = '<div class="check-list">';
+  pendentes.forEach(function(emp) {
+    var aluno = alunosCache.find(function(a) { return a.id === emp.aluno_id; });
+    var livro = livrosCache.find(function(l) { return l.id === emp.livro_id; });
+    var checked = conferenciaDevolvidos[emp.id] ? ' check-item--checked' : '';
+    var dataEmp = emp.data_emprestimo ? emp.data_emprestimo.toDate() : new Date();
+    var diasAtras = Math.floor((now - dataEmp) / 86400000);
+    var overdue = diasAtras > 7 ? ' check-item--overdue' : '';
+    var checkSvg = conferenciaDevolvidos[emp.id] ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>' : '';
+
+    html += '<div class="check-item' + checked + overdue + '" data-emp-id="' + emp.id + '">' +
+      '<div class="check-box">' + checkSvg + '</div>' +
+      '<div class="check-info">' +
+      '<div class="check-book">' + (livro ? escapeHtml(livro.titulo) : '—') + '</div>' +
+      '<div class="check-student">' + (aluno ? escapeHtml(aluno.nome) : '—') +
+      (diasAtras > 7 ? ' <span class="overdue-badge">' + t('overdueLabel') + ' · ' + diasAtras + ' ' + t('daysAgo') + '</span>' : '') +
+      '</div>' +
+      '</div>' +
+      '<div class="check-number">#' + (livro ? escapeHtml(livro.numero) : '') + '</div>' +
+      '</div>';
+  });
+  html += '</div>';
+  content.innerHTML = html;
+
+  var marcados = Object.keys(conferenciaDevolvidos).filter(function(k) { return conferenciaDevolvidos[k]; }).length;
+  if (summary) {
+    summary.hidden = false;
+    summary.innerHTML =
+      '<div class="conf-summary">' +
+      '<span class="conf-summary__returned">' + marcados + ' ' + t('conferenciaSummary') + '</span>' +
+      '<span class="conf-summary__missing">' + (pendentes.length - marcados) + ' ' + t('conferenciaPending') + '</span>' +
+      '</div>';
+  }
+  if (btnConfirmar) btnConfirmar.hidden = marcados === 0;
+}
+
+function confirmarDevolucoes() {
+  var ids = Object.keys(conferenciaDevolvidos).filter(function(k) { return conferenciaDevolvidos[k]; });
+  if (!ids.length) {
+    showToast(t('noReturnsSelected'), 'error');
+    return;
+  }
+
+  var btn = document.getElementById('btn-confirmar-devolucoes');
+  btn.classList.add('btn-primary--loading');
+  btn.disabled = true;
+
+  var batch = db.batch();
+  ids.forEach(function(empId) {
+    var emp = emprestimosCache.find(function(e) { return e.id === empId; });
+    if (!emp) return;
+    batch.update(db.collection('emprestimos').doc(empId), {
+      devolvido: true,
+      data_devolucao: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    batch.update(db.collection('livros').doc(emp.livro_id), { disponivel: true });
+  });
+
+  batch.commit().then(function() {
+    showToast(t('returnSuccess'), 'success');
+    conferenciaDevolvidos = {};
+    return Promise.all([carregarEmprestimos(), carregarLivros()]);
+  }).then(function() {
+    renderConferencia();
+    renderStudentsEmprestimo();
+    renderRecentEmprestimos();
+    renderActivityHome();
+    renderLivros();
+    atualizarStats();
+  }).catch(function() {
+    showToast(t('returnError'), 'error');
+  }).finally(function() {
+    btn.classList.remove('btn-primary--loading');
+    btn.disabled = false;
+  });
+}
+
+setupChips('chips-conferencia', function(chip) {
+  conferenciaTurmaSelecionada = chip.dataset.turma;
+  conferenciaDevolvidos = {};
+  renderConferencia();
+});
+
+document.getElementById('conferencia-content').addEventListener('click', function(e) {
+  var item = e.target.closest('.check-item');
+  if (!item) return;
+  var empId = item.dataset.empId;
+  if (!empId) return;
+  conferenciaDevolvidos[empId] = !conferenciaDevolvidos[empId];
+  renderConferencia();
+});
+
+document.getElementById('btn-confirmar-devolucoes').addEventListener('click', confirmarDevolucoes);
+
+
+/* ================================================================
+   TEMA CLARO/ESCURO — TOGGLE
+   ================================================================ */
+(function() {
+  var toggle = document.getElementById('theme-toggle');
+  var root = document.documentElement;
+
+  function getEffectiveTheme() {
+    var stored = null;
+    try { stored = localStorage.getItem('leitura-theme'); } catch(e) {}
+    if (stored === 'dark' || stored === 'light') return stored;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  function applyStoredTheme() {
+    var stored = null;
+    try { stored = localStorage.getItem('leitura-theme'); } catch(e) {}
+    if (stored === 'dark' || stored === 'light') {
+      root.setAttribute('data-theme', stored);
+    }
+  }
+
+  applyStoredTheme();
+
+  if (toggle) {
+    toggle.addEventListener('click', function() {
+      var next = getEffectiveTheme() === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('leitura-theme', next); } catch(e) {}
+    });
+  }
+})();
+
+
+/* ================================================================
+   SERVICE WORKER — REGISTRO
+   ================================================================ */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('sw.js');
+  });
+}
+</script>
+
+</body>
+</html>
