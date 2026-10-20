@@ -238,7 +238,7 @@ img { max-width: 100%; display: block; }
   border-radius: var(--radius-sm);
   display: grid;
   place-items: center;
-  color: #fff;
+  color: var(--text-on-accent);
 }
 
 .logo__text {
@@ -1168,7 +1168,7 @@ img { max-width: 100%; display: block; }
   height: 52px;
   border-radius: var(--radius-full);
   background: var(--accent);
-  color: #fff;
+  color: var(--text-on-accent);
   display: grid;
   place-items: center;
   box-shadow: var(--shadow-lg);
@@ -1209,7 +1209,7 @@ img { max-width: 100%; display: block; }
   transform: translateX(-50%) translateY(0);
 }
 
-.toast--success { background: var(--success); color: #fff; }
+.toast--success { background: var(--success); color: var(--text-on-accent); }
 .toast--error { background: var(--error); color: #fff; }
 
 
@@ -2109,9 +2109,7 @@ function updateWeekBadge() {
   if (!badge) return;
 
   var now = new Date();
-  var startOfYear = new Date(now.getFullYear(), 0, 1);
-  var days = Math.floor((now - startOfYear) / 86400000);
-  var weekNum = Math.ceil((days + startOfYear.getDay() + 1) / 7);
+  var weekNum = getWeekNumber();
 
   var monday = new Date(now);
   monday.setDate(now.getDate() - ((now.getDay() + 6) % 7));
@@ -2119,7 +2117,10 @@ function updateWeekBadge() {
   friday.setDate(monday.getDate() + 4);
 
   var months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
-  var dateStr = monday.getDate() + '–' + friday.getDate() + ' ' + months[monday.getMonth()] + ' ' + now.getFullYear();
+  var dateStr = monday.getMonth() === friday.getMonth()
+    ? monday.getDate() + '–' + friday.getDate() + ' ' + months[monday.getMonth()]
+    : monday.getDate() + ' ' + months[monday.getMonth()] + ' – ' + friday.getDate() + ' ' + months[friday.getMonth()];
+  dateStr += ' ' + now.getFullYear();
 
   var span = badge.querySelector('span');
   if (span) span.textContent = 'Semana ' + weekNum + ' · ' + dateStr;
@@ -2498,7 +2499,7 @@ function abrirFormLivro(id) {
     var serie = document.getElementById('modal-livro-serie').value;
     if (!tituloLivro) { showToast(t('errorBookTitle'), 'error'); return; }
     if (!numero) { showToast(t('errorBookNumber'), 'error'); return; }
-    var dup = livrosCache.find(function(l) { return l.numero.toUpperCase() === numero && l.serie === serie && l.id !== id; });
+    var dup = livrosCache.find(function(l) { return String(l.numero).toUpperCase() === numero && l.serie === serie && l.id !== id; });
     if (dup) { showToast(t('errorDuplicateBook') + ' ' + numero + ' (' + serie + 'º Ano)', 'error'); return; }
     salvarLivro({ titulo: tituloLivro, numero: numero, serie: serie }, id).then(function() {
       closeModal();
@@ -2611,13 +2612,21 @@ function atualizarStats() {
   var elAcervo = document.getElementById('stat-acervo');
   if (elAcervo) elAcervo.textContent = livrosCache.length;
 
-  var empSemana = emprestimosCache.length;
+  var now = new Date();
+  var monday = new Date(now);
+  monday.setDate(now.getDate() - ((now.getDay() + 6) % 7));
+  monday.setHours(0, 0, 0, 0);
+
+  var empSemana = emprestimosCache.filter(function(e) {
+    if (!e.data_emprestimo) return false;
+    var d = e.data_emprestimo.toDate ? e.data_emprestimo.toDate() : new Date(e.data_emprestimo);
+    return d >= monday;
+  }).length;
   var elEmprestimos = document.getElementById('stat-emprestimos');
   if (elEmprestimos) elEmprestimos.textContent = empSemana;
 
-  var pendentes = emprestimosCache.filter(function(e) { return !e.devolvido; }).length;
   var elPendentes = document.getElementById('stat-pendentes');
-  if (elPendentes) elPendentes.textContent = pendentes;
+  if (elPendentes) elPendentes.textContent = emprestimosCache.length;
 }
 
 function renderActivityHome() {
@@ -2798,7 +2807,7 @@ function registrarEmprestimo() {
   if (!turma) return;
 
   var livro = livrosCache.find(function(l) {
-    return l.numero.toUpperCase() === numero && l.serie === turma.serie;
+    return String(l.numero).toUpperCase() === numero && l.serie === turma.serie;
   });
 
   if (!livro) {

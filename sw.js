@@ -44,7 +44,12 @@ self.addEventListener('fetch', function(event) {
         return response;
       })
       .catch(function() {
-        return caches.match(event.request);
+        return caches.match(event.request).then(function(cached) {
+          return cached || new Response('Offline — conecte-se à internet para usar o app.', {
+            status: 503,
+            headers: { 'Content-Type': 'text/plain; charset=UTF-8' }
+          });
+        });
       })
   );
 });
