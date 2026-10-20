@@ -1349,6 +1349,111 @@ img { max-width: 100%; display: block; }
   flex-shrink: 0;
 }
 
+/* ── Perfil do Livro ── */
+#screen-perfil-livro {
+  padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+}
+
+.book-profile-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 24px 16px;
+  margin-bottom: 20px;
+}
+
+.book-profile-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius);
+  background: var(--accent-light);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+  margin-bottom: 16px;
+}
+
+.book-profile-title {
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.book-profile-meta {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.book-profile-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  margin-top: 12px;
+}
+
+.book-profile-badge--available {
+  background: var(--accent-light);
+  color: var(--accent);
+}
+
+.book-profile-badge--borrowed {
+  background: var(--warning-light);
+  color: var(--warning);
+}
+
+.book-profile-current {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--warning-light);
+  border: 1px solid var(--warning-surface);
+  margin-bottom: 20px;
+}
+
+.book-profile-current__icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: var(--warning-surface);
+  color: var(--warning);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.book-profile-current__text {
+  font-size: 0.8125rem;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.book-profile-current__name {
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.book-profile-current__name:hover {
+  color: var(--accent);
+}
+
+.book-profile-current__date {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
 
 /* ================================================================
    EMPTY STATE
@@ -2001,6 +2106,24 @@ img { max-width: 100%; display: block; }
   <div id="profile-timeline"></div>
 </section>
 
+<section id="screen-perfil-livro" class="screen" hidden>
+  <div class="profile-header">
+    <button class="btn-back" id="btn-livro-voltar" aria-label="Voltar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+    </button>
+    <h1 class="screen-title" data-i18n="bookProfileTitle">Perfil do Livro</h1>
+  </div>
+
+  <div class="book-profile-hero" id="book-profile-hero"></div>
+
+  <div class="profile-stats" id="book-profile-stats"></div>
+
+  <div id="book-profile-current"></div>
+
+  <div class="section-title" data-i18n="bookProfileHistory">Histórico de empréstimos</div>
+  <div id="book-profile-timeline"></div>
+</section>
+
 
 <!-- ════════════════════════════════════════════════════════════════
      TOAST DE NOTIFICAÇÃO
@@ -2217,7 +2340,20 @@ const i18n = {
     profileNoHistoryText: 'O histórico aparecerá aqui quando houver empréstimos',
     profileLoanDate: 'Emprestado em',
     profileReturnDate: 'Devolvido em',
-    profileDays: 'dias com o livro'
+    profileDays: 'dias com o livro',
+    bookProfileTitle: 'Perfil do Livro',
+    bookProfileHistory: 'Histórico de empréstimos',
+    bookProfileLoans: 'Empréstimos',
+    bookProfileAvgDays: 'Média (dias)',
+    bookProfileReaders: 'Leitores',
+    bookProfileAvailable: 'Disponível',
+    bookProfileBorrowed: 'Emprestado',
+    bookProfileCurrentlyWith: 'Atualmente com',
+    bookProfileSince: 'desde',
+    bookProfileNoHistory: 'Nenhum empréstimo registrado',
+    bookProfileNoHistoryText: 'O histórico aparecerá aqui quando houver empréstimos',
+    bookProfileBorrowedBy: 'Emprestado para',
+    bookProfileReturnedBy: 'Devolvido por'
   }
 };
 
@@ -2232,7 +2368,7 @@ function t(key) {
    NAVEGAÇÃO SPA
    ================================================================ */
 const screens = ['inicio', 'emprestimo', 'conferencia', 'cadastros', 'tarefa'];
-const allScreens = ['inicio', 'emprestimo', 'conferencia', 'cadastros', 'tarefa', 'perfil-aluno'];
+const allScreens = ['inicio', 'emprestimo', 'conferencia', 'cadastros', 'tarefa', 'perfil-aluno', 'perfil-livro'];
 let currentScreen = 'inicio';
 var previousScreen = 'inicio';
 
@@ -2260,7 +2396,7 @@ function navigateTo(screen) {
   if (fab) fab.hidden = screen !== 'cadastros';
 
   var bottomNav = document.querySelector('.bottom-nav');
-  if (bottomNav) bottomNav.hidden = screen === 'perfil-aluno';
+  if (bottomNav) bottomNav.hidden = screen === 'perfil-aluno' || screen === 'perfil-livro';
 
   currentScreen = screen;
   window.scrollTo(0, 0);
@@ -2717,7 +2853,7 @@ function renderLivros() {
     var numStr = String(livro.numero).toUpperCase();
     html += '<div class="book-item">' +
       '<div class="book-num">#' + numStr + '</div>' +
-      '<div class="book-info">' +
+      '<div class="book-info" style="cursor:pointer" data-action="perfil-livro" data-id="' + livro.id + '">' +
       '<div class="book-title">' + escapeHtml(livro.titulo) + '</div>' +
       '<div class="book-author">' + livro.serie + 'º Ano</div>' +
       '</div>' +
@@ -2819,6 +2955,7 @@ document.getElementById('screen-cadastros').addEventListener('click', function(e
   else if (action === 'editar-livro') abrirFormLivro(id);
   else if (action === 'excluir-livro') confirmarExclusao('livro', id, nome);
   else if (action === 'perfil-aluno') abrirPerfilAluno(id);
+  else if (action === 'perfil-livro') abrirPerfilLivro(id);
 });
 
 
@@ -2931,7 +3068,7 @@ function renderActivityHome() {
         '<div class="loan-record__icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg></div>' +
         '<div class="loan-record__info">' +
         '<div class="loan-record__student" data-perfil-aluno="' + (aluno ? aluno.id : '') + '" style="cursor:pointer">' + escapeHtml(aluno ? aluno.nome : '—') + '</div>' +
-        '<div class="loan-record__detail">' + t('loanBook') + ' ' + (livro ? escapeHtml(livro.numero) : '—') + ' · ' + dataStr + '</div>' +
+        '<div class="loan-record__detail"><span data-perfil-livro="' + (livro ? livro.id : '') + '" style="cursor:pointer">' + t('loanBook') + ' ' + (livro ? escapeHtml(livro.numero) : '—') + '</span> · ' + dataStr + '</div>' +
         '</div>' +
         '<span class="student-pending-badge" style="display:inline-flex;background:' + (emp.devolvido ? 'var(--accent-light)' : 'var(--warning-light)') + ';color:' + (emp.devolvido ? 'var(--accent)' : 'var(--warning)') + '">' + (emp.devolvido ? '✓' : '⏳') + '</span>' +
         '</div>';
@@ -3047,7 +3184,7 @@ function renderRecentEmprestimos() {
         '<div class="loan-record__icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg></div>' +
         '<div class="loan-record__info">' +
         '<div class="loan-record__student" data-perfil-aluno="' + (aluno ? aluno.id : '') + '" style="cursor:pointer">' + escapeHtml(aluno ? aluno.nome : '—') + '</div>' +
-        '<div class="loan-record__detail">' + t('loanBook') + ' ' + (livro ? escapeHtml(livro.numero) : '—') + ' · ' + dataStr + '</div>' +
+        '<div class="loan-record__detail"><span data-perfil-livro="' + (livro ? livro.id : '') + '" style="cursor:pointer">' + t('loanBook') + ' ' + (livro ? escapeHtml(livro.numero) : '—') + '</span> · ' + dataStr + '</div>' +
         '</div>' +
         '<span class="student-pending-badge" style="display:inline-flex;background:' + (emp.devolvido ? 'var(--accent-light)' : 'var(--warning-light)') + ';color:' + (emp.devolvido ? 'var(--accent)' : 'var(--warning)') + '">' + status + '</span>' +
         '</div>';
@@ -3415,7 +3552,7 @@ function renderConferencia() {
     html += '<div class="check-item' + checked + overdue + '" data-emp-id="' + emp.id + '">' +
       '<div class="check-box">' + checkSvg + '</div>' +
       '<div class="check-info">' +
-      '<div class="check-book">' + (livro ? escapeHtml(livro.titulo) : '—') + '</div>' +
+      '<div class="check-book" data-perfil-livro="' + (livro ? livro.id : '') + '" style="cursor:pointer">' + (livro ? escapeHtml(livro.titulo) : '—') + '</div>' +
       '<div class="check-student">' + (aluno ? escapeHtml(aluno.nome) : '—') +
       (diasAtras > 7 ? ' <span class="overdue-badge">' + t('overdueLabel') + ' · ' + diasAtras + ' ' + t('daysAgo') + '</span>' : '') +
       '</div>' +
@@ -3650,7 +3787,7 @@ function renderPerfilAluno() {
         html += '<div class="timeline-item' + activeClass + repeatedClass + '">' +
           '<div class="timeline-icon ' + iconClass + '">' + iconSvg + '</div>' +
           '<div class="timeline-info">' +
-          '<div class="timeline-book">' + (livro ? escapeHtml(livro.titulo) : '—') + '</div>' +
+          '<div class="timeline-book" data-perfil-livro="' + (livro ? livro.id : '') + '" style="cursor:pointer">' + (livro ? escapeHtml(livro.titulo) : '—') + '</div>' +
           '<div class="timeline-meta">' + empStr + metaExtra + '</div>' +
           '</div>' +
           '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">' +
@@ -3677,6 +3814,172 @@ document.addEventListener('click', function(e) {
   if (!el) return;
   var alunoId = el.dataset.perfilAluno;
   if (alunoId) abrirPerfilAluno(alunoId);
+});
+
+
+/* ================================================================
+   PERFIL DO LIVRO — HISTÓRICO DE EMPRÉSTIMOS POR LIVRO
+   ================================================================ */
+var perfilLivroId = null;
+
+function abrirPerfilLivro(livroId) {
+  perfilLivroId = livroId;
+  navigateTo('perfil-livro');
+  renderPerfilLivro();
+}
+
+function renderPerfilLivro() {
+  if (!perfilLivroId) return;
+
+  var livro = livrosCache.find(function(l) { return l.id === perfilLivroId; });
+  if (!livro) return;
+
+  var heroEl = document.getElementById('book-profile-hero');
+  var statsEl = document.getElementById('book-profile-stats');
+  var currentEl = document.getElementById('book-profile-current');
+  var timelineEl = document.getElementById('book-profile-timeline');
+
+  heroEl.innerHTML =
+    '<div class="book-profile-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg></div>' +
+    '<div class="book-profile-title">' + escapeHtml(livro.titulo) + '</div>' +
+    '<div class="book-profile-meta">#' + escapeHtml(String(livro.numero)) + ' · ' + livro.serie + 'º Ano</div>';
+
+  statsEl.innerHTML = '<div class="empty-state" style="padding:24px;grid-column:1/-1"><div class="empty-state__text">Carregando...</div></div>';
+  currentEl.innerHTML = '';
+  timelineEl.innerHTML = '';
+
+  db.collection('emprestimos')
+    .where('livro_id', '==', perfilLivroId)
+    .get()
+    .then(function(snap) {
+      var emprestimos = [];
+      snap.forEach(function(doc) {
+        emprestimos.push(Object.assign({ id: doc.id }, doc.data()));
+      });
+      emprestimos.sort(function(a, b) {
+        var da = a.data_emprestimo ? (a.data_emprestimo.toDate ? a.data_emprestimo.toDate() : new Date(a.data_emprestimo)) : new Date(0);
+        var db2 = b.data_emprestimo ? (b.data_emprestimo.toDate ? b.data_emprestimo.toDate() : new Date(b.data_emprestimo)) : new Date(0);
+        return db2 - da;
+      });
+
+      var devolvidos = emprestimos.filter(function(e) { return e.devolvido; });
+      var pendentes = emprestimos.filter(function(e) { return !e.devolvido; });
+
+      var leitoresUnicos = {};
+      emprestimos.forEach(function(e) { leitoresUnicos[e.aluno_id] = true; });
+      var numLeitores = Object.keys(leitoresUnicos).length;
+
+      var diasTotal = 0;
+      var diasCount = 0;
+      devolvidos.forEach(function(e) {
+        if (e.data_emprestimo && e.data_devolucao) {
+          var inicio = e.data_emprestimo.toDate ? e.data_emprestimo.toDate() : new Date(e.data_emprestimo);
+          var fim = e.data_devolucao.toDate ? e.data_devolucao.toDate() : new Date(e.data_devolucao);
+          var dias = Math.max(1, Math.round((fim - inicio) / 86400000));
+          diasTotal += dias;
+          diasCount++;
+        }
+      });
+      var mediaStr = diasCount > 0 ? Math.round(diasTotal / diasCount) : '—';
+
+      var badgeHtml = pendentes.length
+        ? '<div class="book-profile-badge book-profile-badge--borrowed">⏳ ' + t('bookProfileBorrowed') + '</div>'
+        : '<div class="book-profile-badge book-profile-badge--available">✓ ' + t('bookProfileAvailable') + '</div>';
+      heroEl.innerHTML += badgeHtml;
+
+      statsEl.innerHTML =
+        '<div class="profile-stat">' +
+        '<div class="profile-stat__value profile-stat__value--accent">' + emprestimos.length + '</div>' +
+        '<div class="profile-stat__label">' + t('bookProfileLoans') + '</div>' +
+        '</div>' +
+        '<div class="profile-stat">' +
+        '<div class="profile-stat__value profile-stat__value--info">' + numLeitores + '</div>' +
+        '<div class="profile-stat__label">' + t('bookProfileReaders') + '</div>' +
+        '</div>' +
+        '<div class="profile-stat">' +
+        '<div class="profile-stat__value profile-stat__value--warning">' + mediaStr + '</div>' +
+        '<div class="profile-stat__label">' + t('bookProfileAvgDays') + '</div>' +
+        '</div>';
+
+      if (pendentes.length) {
+        var empAtual = pendentes[0];
+        var alunoAtual = alunosCache.find(function(a) { return a.id === empAtual.aluno_id; });
+        var dataEmpAtual = empAtual.data_emprestimo ? (empAtual.data_emprestimo.toDate ? empAtual.data_emprestimo.toDate() : new Date(empAtual.data_emprestimo)) : new Date();
+        var dataStr = dataEmpAtual.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+        currentEl.innerHTML =
+          '<div class="book-profile-current">' +
+          '<div class="book-profile-current__icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>' +
+          '<div class="book-profile-current__text">' +
+          '<div>' + t('bookProfileCurrentlyWith') + ' <span class="book-profile-current__name" data-perfil-aluno="' + (alunoAtual ? alunoAtual.id : '') + '">' + escapeHtml(alunoAtual ? alunoAtual.nome : '—') + '</span></div>' +
+          '<div class="book-profile-current__date">' + t('bookProfileSince') + ' ' + dataStr + '</div>' +
+          '</div>' +
+          '</div>';
+      }
+
+      if (!emprestimos.length) {
+        timelineEl.innerHTML =
+          '<div class="empty-state">' +
+          '<div class="empty-state__icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg></div>' +
+          '<div class="empty-state__title">' + t('bookProfileNoHistory') + '</div>' +
+          '<div class="empty-state__text">' + t('bookProfileNoHistoryText') + '</div>' +
+          '</div>';
+        return;
+      }
+
+      var html = '<div class="profile-timeline">';
+      emprestimos.forEach(function(emp) {
+        var aluno = alunosCache.find(function(a) { return a.id === emp.aluno_id; });
+        var dataEmp = emp.data_emprestimo ? (emp.data_emprestimo.toDate ? emp.data_emprestimo.toDate() : new Date(emp.data_emprestimo)) : new Date();
+        var empStr = dataEmp.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+        var activeClass = !emp.devolvido ? ' timeline-item--active' : '';
+        var statusHtml, iconClass, metaExtra = '';
+
+        if (emp.devolvido) {
+          iconClass = 'timeline-icon--returned';
+          statusHtml = '<span class="timeline-status timeline-status--returned">✓ ' + t('profileReturned') + '</span>';
+          if (emp.data_devolucao) {
+            var dataDev = emp.data_devolucao.toDate ? emp.data_devolucao.toDate() : new Date(emp.data_devolucao);
+            var dias = Math.max(1, Math.round((dataDev - dataEmp) / 86400000));
+            metaExtra = ' · ' + dias + ' ' + t('profileDays');
+          }
+        } else {
+          iconClass = 'timeline-icon--pending';
+          statusHtml = '<span class="timeline-status timeline-status--pending">⏳ ' + t('profilePendingStatus') + '</span>';
+          var diasPendente = Math.floor((new Date() - dataEmp) / 86400000);
+          metaExtra = ' · ' + diasPendente + ' ' + t('profileDays');
+        }
+
+        var iconSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>';
+
+        html += '<div class="timeline-item' + activeClass + '" data-perfil-aluno="' + (aluno ? aluno.id : '') + '" style="cursor:pointer">' +
+          '<div class="timeline-icon ' + iconClass + '">' + iconSvg + '</div>' +
+          '<div class="timeline-info">' +
+          '<div class="timeline-book">' + escapeHtml(aluno ? aluno.nome : '—') + '</div>' +
+          '<div class="timeline-meta">' + empStr + metaExtra + '</div>' +
+          '</div>' +
+          statusHtml +
+          '</div>';
+      });
+      html += '</div>';
+      timelineEl.innerHTML = html;
+    })
+    .catch(function() {
+      timelineEl.innerHTML =
+        '<div class="empty-state"><div class="empty-state__text">' + t('errorLoadData') + '</div></div>';
+    });
+}
+
+document.getElementById('btn-livro-voltar').addEventListener('click', function() {
+  navigateTo(screens.includes(previousScreen) ? previousScreen : 'inicio');
+});
+
+document.addEventListener('click', function(e) {
+  var el = e.target.closest('[data-perfil-livro]');
+  if (!el) return;
+  var livroId = el.dataset.perfilLivro;
+  if (livroId) abrirPerfilLivro(livroId);
 });
 
 
