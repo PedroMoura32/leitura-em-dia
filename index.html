@@ -2758,8 +2758,8 @@ if (loginForm) {
       if (loginError) {
         loginError.hidden = false;
         loginError.textContent = (err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential')
-          ? 'E-mail ou senha incorretos'
-          : 'Erro ao fazer login. Tente novamente.';
+          ? t('loginErrorInvalid')
+          : t('loginErrorGeneric');
       }
     });
   });
@@ -2904,8 +2904,6 @@ const i18n = {
     loginEmail: 'E-mail',
     loginPassword: 'Senha',
     loginButton: 'Entrar',
-    loginOr: 'ou',
-    loginGoogle: 'Entrar com Google',
     loginErrorInvalid: 'E-mail ou senha incorretos',
     loginErrorGeneric: 'Erro ao fazer login. Tente novamente.',
     logoutSuccess: 'Você saiu do app',
@@ -3152,7 +3150,7 @@ function updateWeekBadge() {
   dateStr += ' ' + now.getFullYear();
 
   var span = badge.querySelector('span');
-  if (span) span.textContent = 'Semana ' + weekNum + ' · ' + dateStr;
+  if (span) span.textContent = t('weekBadge') + ' ' + weekNum + ' · ' + dateStr;
 }
 
 updateWeekBadge();
@@ -3693,6 +3691,8 @@ function renderActivityHome() {
         '</div>';
     });
     container.innerHTML = html;
+  }).catch(function() {
+    container.innerHTML = '<div class="empty-state"><div class="empty-state__text">' + t('errorLoadData') + '</div></div>';
   });
 }
 
@@ -3797,7 +3797,7 @@ function renderRecentEmprestimos() {
       var livro = livrosCache.find(function(l) { return l.id === emp.livro_id; });
       var data = emp.data_emprestimo ? emp.data_emprestimo.toDate() : new Date();
       var dataStr = formatDateRelative(data);
-      var status = emp.devolvido ? '✓ Devolvido' : '⏳ Pendente';
+      var status = emp.devolvido ? '✓ ' + t('profileReturned') : '⏳ ' + t('profilePendingStatus');
 
       html += '<div class="loan-record">' +
         '<div class="loan-record__icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg></div>' +
@@ -3809,6 +3809,8 @@ function renderRecentEmprestimos() {
         '</div>';
     });
     container.innerHTML = html;
+  }).catch(function() {
+    container.innerHTML = '<div class="empty-state"><div class="empty-state__text">' + t('errorLoadData') + '</div></div>';
   });
 }
 
@@ -4067,6 +4069,8 @@ function renderTarefaTimeline() {
         tarefaCache.push(d);
       });
       renderTarefaView();
+    }).catch(function() {
+      showToast(t('errorLoadData'), 'error');
     });
 }
 
@@ -4891,7 +4895,7 @@ function renderDashboard() {
     });
     updateDashboardData(allEmprestimos);
   }).catch(function() {
-    showToast(i18n[currentLang].errorGeneric || 'Erro ao carregar dados', 'error');
+    showToast(t('errorLoadData'), 'error');
   });
 }
 
