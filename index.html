@@ -151,6 +151,7 @@ body {
   margin: 0;
   background: var(--bg-primary);
   color: var(--text-primary);
+  overscroll-behavior-y: contain;
   font-family: var(--font-body);
   font-size: 15px;
   line-height: 1.5;
@@ -485,7 +486,10 @@ img { max-width: 100%; display: block; }
   color: var(--accent);
 }
 
-.chip--active {
+.chip--active,
+.chip--active:hover,
+.chip--active:focus,
+.chip--active:active {
   background: var(--accent);
   color: var(--text-on-accent);
   border-color: var(--accent);
@@ -4012,7 +4016,17 @@ function salvarTarefa() {
   var semana = getWeekNumber();
   var agora = new Date();
   var path = 'tarefas/' + tarefaSerieSelecionada + '/' + agora.getFullYear() + '_sem' + semana + '_' + Date.now() + '.jpg';
-  var ref = storage.ref(path);
+
+  var ref;
+  try {
+    ref = storage.ref(path);
+  } catch (e) {
+    showToast(t('homeworkError'), 'error');
+    btn.classList.remove('btn-primary--loading');
+    btn.disabled = false;
+    uploadTarefa.classList.remove('upload-area--uploading');
+    return;
+  }
 
   ref.put(tarefaImagemBlob).then(function(snapshot) {
     return snapshot.ref.getDownloadURL();
