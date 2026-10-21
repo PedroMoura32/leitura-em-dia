@@ -2169,7 +2169,7 @@ img { max-width: 100%; display: block; }
 <!-- ════════════════════════════════════════════════════════════════
      TELA DE LOGIN
      ════════════════════════════════════════════════════════════════ -->
-<div id="login-screen" class="login-screen">
+<div id="login-screen" class="login-screen" hidden>
   <div class="login-card">
     <div class="login-logo">
       <div class="login-logo__icon">
@@ -2711,7 +2711,6 @@ img { max-width: 100%; display: block; }
      ════════════════════════════════════════════════════════════════ -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="firebase-config.js"></script>
 
@@ -2721,7 +2720,6 @@ img { max-width: 100%; display: block; }
    ================================================================ */
 firebase.initializeApp(firebaseConfig);
 var db = firebase.firestore();
-var storage = firebase.storage();
 var auth = firebase.auth();
 
 
@@ -2745,6 +2743,7 @@ auth.onAuthStateChanged(function(user) {
     } else if (avatar && user.email) {
       avatar.textContent = user.email.substring(0, 2).toUpperCase();
     }
+    if (typeof recarregarDados === 'function') recarregarDados();
   } else {
     if (loginScreen) loginScreen.hidden = false;
     if (appContainer) appContainer.hidden = true;
@@ -3700,9 +3699,6 @@ function renderActivityHome() {
   });
 }
 
-recarregarDados();
-
-
 /* ================================================================
    EMPRÉSTIMO — LÓGICA COMPLETA
    ================================================================ */
@@ -3936,7 +3932,6 @@ if (searchAlunoEmprestimo) {
    ================================================================ */
 var tarefaSerieSelecionada = '3';
 var tarefaImagemBlob = null;
-var tarefaPreviewUrl = null;
 
 function comprimirImagem(file) {
   return new Promise(function(resolve) {
@@ -3944,7 +3939,7 @@ function comprimirImagem(file) {
     var url = URL.createObjectURL(file);
     img.onload = function() {
       URL.revokeObjectURL(url);
-      var MAX_W = 1200;
+      var MAX_W = 800;
       var w = img.width;
       var h = img.height;
       if (w > MAX_W) { h = h * MAX_W / w; w = MAX_W; }
@@ -3953,7 +3948,8 @@ function comprimirImagem(file) {
       canvas.height = h;
       var ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, w, h);
-      canvas.toBlob(function(blob) { resolve(blob); }, 'image/jpeg', 0.7);
+      var dataUrl = canvas.toDataURL('image/jpeg', 0.5);
+      resolve(dataUrl);
     };
     img.src = url;
   });
@@ -3982,14 +3978,12 @@ if (inputTarefaFoto) {
     var file = this.files[0];
     if (!file) return;
 
-    comprimirImagem(file).then(function(blob) {
-      tarefaImagemBlob = blob;
-      if (tarefaPreviewUrl) URL.revokeObjectURL(tarefaPreviewUrl);
-      tarefaPreviewUrl = URL.createObjectURL(blob);
+    comprimirImagem(file).then(function(dataUrl) {
+      tarefaImagemBlob = dataUrl;
 
       uploadTarefa.classList.add('upload-area--has-preview');
       uploadTarefa.innerHTML =
-        '<img src="' + tarefaPreviewUrl + '" alt="Preview da tarefa">' +
+        '<img src="' + dataUrl + '" alt="Preview da tarefa">' +
         '<div class="upload-area__text">' + t('homeworkChangePhoto') + '</div>';
 
       if (btnSalvarTarefa) btnSalvarTarefa.hidden = false;
@@ -4015,33 +4009,16 @@ function salvarTarefa() {
 
   var semana = getWeekNumber();
   var agora = new Date();
-  var path = 'tarefas/' + tarefaSerieSelecionada + '/' + agora.getFullYear() + '_sem' + semana + '_' + Date.now() + '.jpg';
 
-  var ref;
-  try {
-    ref = storage.ref(path);
-  } catch (e) {
-    showToast(t('homeworkError'), 'error');
-    btn.classList.remove('btn-primary--loading');
-    btn.disabled = false;
-    uploadTarefa.classList.remove('upload-area--uploading');
-    return;
-  }
-
-  ref.put(tarefaImagemBlob).then(function(snapshot) {
-    return snapshot.ref.getDownloadURL();
-  }).then(function(url) {
-    return db.collection('tarefas_casa').add({
-      serie: tarefaSerieSelecionada,
-      data: firebase.firestore.FieldValue.serverTimestamp(),
-      imagem_url: url,
-      semana: semana,
-      ano: agora.getFullYear()
-    });
+  db.collection('tarefas_casa').add({
+    serie: tarefaSerieSelecionada,
+    data: firebase.firestore.FieldValue.serverTimestamp(),
+    imagem_data: tarefaImagemBlob,
+    semana: semana,
+    ano: agora.getFullYear()
   }).then(function() {
     showToast(t('homeworkSaved'), 'success');
     tarefaImagemBlob = null;
-    if (tarefaPreviewUrl) { URL.revokeObjectURL(tarefaPreviewUrl); tarefaPreviewUrl = null; }
     inputTarefaFoto.value = '';
     uploadTarefa.classList.remove('upload-area--has-preview');
     uploadTarefa.innerHTML =
@@ -4115,7 +4092,7 @@ function renderTarefaView() {
       var data = tarefa.data ? tarefa.data.toDate() : new Date();
       var dataStr = data.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
       html += '<div class="tarefa-gallery__item" data-tarefa-idx="' + idx + '">' +
-        '<img src="' + escapeAttr(tarefa.imagem_url) + '" alt="Tarefa" loading="lazy">' +
+        '<img src="' + escapeAttr(tarefa.imagem_data || tarefa.imagem_url) + '" alt="Tarefa" loading="lazy">' +
         '<div class="tarefa-gallery__item-meta">' + dataStr + ' · S' + tarefa.semana + '</div>' +
         '</div>';
     });
@@ -4127,7 +4104,7 @@ function renderTarefaView() {
       var data = tarefa.data ? tarefa.data.toDate() : new Date();
       var dataStr = data.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
       html += '<div class="tarefa-card" data-tarefa-idx="' + idx + '">' +
-        '<img class="tarefa-card__thumb" src="' + escapeAttr(tarefa.imagem_url) + '" alt="Tarefa" loading="lazy">' +
+        '<img class="tarefa-card__thumb" src="' + escapeAttr(tarefa.imagem_data || tarefa.imagem_url) + '" alt="Tarefa" loading="lazy">' +
         '<div class="tarefa-card__info">' +
         '<div class="tarefa-card__date">' + dataStr + '</div>' +
         '<div class="tarefa-card__meta">' + t('homeworkWeek') + ' ' + tarefa.semana + ' · ' + tarefa.serie + 'º Ano</div>' +
@@ -4157,7 +4134,7 @@ function abrirTarefaFullscreen(idx) {
       '<button class="tarefa-fullscreen__close" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>' +
       (currentIdx > 0 ? '<button class="tarefa-fullscreen__nav tarefa-fullscreen__nav--prev" aria-label="Anterior"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>' : '') +
       (currentIdx < items.length - 1 ? '<button class="tarefa-fullscreen__nav tarefa-fullscreen__nav--next" aria-label="Próxima"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></button>' : '') +
-      '<img src="' + escapeAttr(tarefa.imagem_url) + '" alt="Tarefa em tela cheia">' +
+      '<img src="' + escapeAttr(tarefa.imagem_data || tarefa.imagem_url) + '" alt="Tarefa em tela cheia">' +
       '<div class="tarefa-fullscreen__info">' + dataStr + ' · ' + t('homeworkWeek') + ' ' + tarefa.semana + ' · ' + tarefa.serie + 'º Ano</div>';
     return overlay;
   }
