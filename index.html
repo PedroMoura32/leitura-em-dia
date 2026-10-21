@@ -1996,7 +1996,12 @@ img { max-width: 100%; display: block; }
 }
 
 .nav-item:hover { color: var(--text-secondary); }
-.nav-item--active { color: var(--accent); }
+.nav-item--active {
+  color: var(--accent);
+  background: var(--accent-light);
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
 
 .nav-item svg {
   width: 22px;
