@@ -1456,6 +1456,111 @@ img { max-width: 100%; display: block; }
 
 
 /* ================================================================
+   DASHBOARD
+   ================================================================ */
+#screen-dashboard .screen-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dashboard-kpi {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 560px) {
+  .dashboard-kpi {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.dashboard-kpi__card {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.dashboard-kpi__icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.dashboard-kpi__icon--accent {
+  background: var(--accent-light);
+  color: var(--accent);
+}
+
+.dashboard-kpi__icon--info {
+  background: color-mix(in srgb, var(--info) 10%, transparent);
+  color: var(--info);
+}
+
+.dashboard-kpi__icon--warning {
+  background: var(--warning-light);
+  color: var(--warning);
+}
+
+.dashboard-kpi__value {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.dashboard-kpi__value--accent { color: var(--accent); }
+.dashboard-kpi__value--info { color: var(--info); }
+.dashboard-kpi__value--warning { color: var(--warning); }
+
+.dashboard-kpi__label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+  line-height: 1.3;
+}
+
+.dashboard-chart-card {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 18px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
+  margin-bottom: 16px;
+}
+
+.dashboard-chart-card__title {
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 14px;
+}
+
+.dashboard-chart-wrap {
+  position: relative;
+  height: 250px;
+}
+
+@media (min-width: 560px) {
+  .dashboard-chart-wrap {
+    height: 300px;
+  }
+}
+
+
+/* ================================================================
    EMPTY STATE
    ================================================================ */
 .empty-state {
@@ -2086,6 +2191,84 @@ img { max-width: 100%; display: block; }
 
 
 <!-- ════════════════════════════════════════════════════════════════
+     TELA: DASHBOARD
+     ════════════════════════════════════════════════════════════════ -->
+<section id="screen-dashboard" class="screen" hidden>
+  <div class="screen-header">
+    <h1 class="screen-title" data-i18n="dashboardTitle">Dashboard</h1>
+  </div>
+
+  <div class="dashboard-kpi" id="dashboard-kpi">
+    <div class="dashboard-kpi__card">
+      <div class="dashboard-kpi__icon dashboard-kpi__icon--accent">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+      </div>
+      <div>
+        <div class="dashboard-kpi__value dashboard-kpi__value--accent" id="dash-kpi-books">0</div>
+        <div class="dashboard-kpi__label" data-i18n="dashboardKpiBooks">Livros no acervo</div>
+      </div>
+    </div>
+    <div class="dashboard-kpi__card">
+      <div class="dashboard-kpi__icon dashboard-kpi__icon--info">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+      </div>
+      <div>
+        <div class="dashboard-kpi__value dashboard-kpi__value--info" id="dash-kpi-loans">0</div>
+        <div class="dashboard-kpi__label" data-i18n="dashboardKpiLoans">Total de empréstimos</div>
+      </div>
+    </div>
+    <div class="dashboard-kpi__card">
+      <div class="dashboard-kpi__icon dashboard-kpi__icon--warning">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <div>
+        <div class="dashboard-kpi__value dashboard-kpi__value--warning" id="dash-kpi-pending">0</div>
+        <div class="dashboard-kpi__label" data-i18n="dashboardKpiPending">Devoluções pendentes</div>
+      </div>
+    </div>
+    <div class="dashboard-kpi__card">
+      <div class="dashboard-kpi__icon dashboard-kpi__icon--accent">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <div>
+        <div class="dashboard-kpi__value dashboard-kpi__value--accent" id="dash-kpi-students">0</div>
+        <div class="dashboard-kpi__label" data-i18n="dashboardKpiStudents">Alunos ativos</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chips-row" id="chips-dashboard">
+    <button class="chip chip--active" data-turma="todas" data-i18n="dashboardAllClasses">Todas</button>
+  </div>
+
+  <div id="dashboard-charts">
+    <div class="dashboard-chart-card">
+      <div class="dashboard-chart-card__title" data-i18n="dashboardByClass">Empréstimos por turma</div>
+      <div class="dashboard-chart-wrap"><canvas id="chart-by-class"></canvas></div>
+    </div>
+    <div class="dashboard-chart-card">
+      <div class="dashboard-chart-card__title" data-i18n="dashboardPopularBooks">Livros mais populares</div>
+      <div class="dashboard-chart-wrap"><canvas id="chart-popular-books"></canvas></div>
+    </div>
+    <div class="dashboard-chart-card">
+      <div class="dashboard-chart-card__title" data-i18n="dashboardOverTime">Empréstimos ao longo do tempo</div>
+      <div class="dashboard-chart-wrap"><canvas id="chart-over-time"></canvas></div>
+    </div>
+  </div>
+
+  <div id="dashboard-empty" hidden>
+    <div class="empty-state">
+      <div class="empty-state__icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 17v-4"/><path d="M12 17V9"/><path d="M17 17v-6"/></svg>
+      </div>
+      <div class="empty-state__title" data-i18n="dashboardNoData">Nenhum dado para exibir</div>
+      <div class="empty-state__text" data-i18n="dashboardNoDataText">Registre empréstimos para ver as estatísticas</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════════
      TELA: PERFIL DO ALUNO
      ════════════════════════════════════════════════════════════════ -->
 <section id="screen-perfil-aluno" class="screen" hidden>
@@ -2176,9 +2359,18 @@ img { max-width: 100%; display: block; }
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
       <span class="nav-item__label" data-i18n="navHomework">Tarefa</span>
     </button>
+    <button class="nav-item" data-screen="dashboard" aria-label="Dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 17v-4"/><path d="M12 17V9"/><path d="M17 17v-6"/></svg>
+      <span class="nav-item__label" data-i18n="navDashboard">Dashboard</span>
+    </button>
   </div>
 </nav>
 
+
+<!-- ════════════════════════════════════════════════════════════════
+     CHART.JS (v4.4.1)
+     ════════════════════════════════════════════════════════════════ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 
 <!-- ════════════════════════════════════════════════════════════════
      FIREBASE SDK (v10.12.2 — compat)
@@ -2353,7 +2545,19 @@ const i18n = {
     bookProfileNoHistory: 'Nenhum empréstimo registrado',
     bookProfileNoHistoryText: 'O histórico aparecerá aqui quando houver empréstimos',
     bookProfileBorrowedBy: 'Emprestado para',
-    bookProfileReturnedBy: 'Devolvido por'
+    bookProfileReturnedBy: 'Devolvido por',
+    navDashboard: 'Dashboard',
+    dashboardTitle: 'Dashboard',
+    dashboardKpiBooks: 'Livros no acervo',
+    dashboardKpiLoans: 'Total de empréstimos',
+    dashboardKpiPending: 'Devoluções pendentes',
+    dashboardKpiStudents: 'Alunos ativos',
+    dashboardAllClasses: 'Todas',
+    dashboardByClass: 'Empréstimos por turma',
+    dashboardPopularBooks: 'Livros mais populares',
+    dashboardOverTime: 'Empréstimos ao longo do tempo',
+    dashboardNoData: 'Nenhum dado para exibir',
+    dashboardNoDataText: 'Registre empréstimos para ver as estatísticas'
   }
 };
 
@@ -2367,8 +2571,8 @@ function t(key) {
 /* ================================================================
    NAVEGAÇÃO SPA
    ================================================================ */
-const screens = ['inicio', 'emprestimo', 'conferencia', 'cadastros', 'tarefa'];
-const allScreens = ['inicio', 'emprestimo', 'conferencia', 'cadastros', 'tarefa', 'perfil-aluno', 'perfil-livro'];
+const screens = ['inicio', 'emprestimo', 'conferencia', 'cadastros', 'tarefa', 'dashboard'];
+const allScreens = ['inicio', 'emprestimo', 'conferencia', 'cadastros', 'tarefa', 'dashboard', 'perfil-aluno', 'perfil-livro'];
 let currentScreen = 'inicio';
 var previousScreen = 'inicio';
 
@@ -2400,6 +2604,8 @@ function navigateTo(screen) {
 
   currentScreen = screen;
   window.scrollTo(0, 0);
+
+  if (screen === 'dashboard' && typeof renderDashboard === 'function') renderDashboard();
 }
 
 document.querySelector('.bottom-nav').addEventListener('click', function(e) {
@@ -3006,6 +3212,7 @@ function recarregarDados() {
     renderConferencia();
     renderActivityHome();
     atualizarStats();
+    renderDashboard();
   }).catch(function() {
     showToast(t('errorLoadData'), 'error');
   });
@@ -3984,6 +4191,318 @@ document.addEventListener('click', function(e) {
 
 
 /* ================================================================
+   DASHBOARD — GRÁFICOS (CHART.JS)
+   ================================================================ */
+var dashChartByClass = null;
+var dashChartPopular = null;
+var dashChartOverTime = null;
+var dashboardTurmaFilter = 'todas';
+
+function getChartColors() {
+  var style = getComputedStyle(document.documentElement);
+  return {
+    accent: style.getPropertyValue('--accent').trim(),
+    accentLight: style.getPropertyValue('--accent-light').trim(),
+    textSecondary: style.getPropertyValue('--text-secondary').trim(),
+    textMuted: style.getPropertyValue('--text-muted').trim(),
+    border: style.getPropertyValue('--border').trim(),
+    info: style.getPropertyValue('--info').trim(),
+    warning: style.getPropertyValue('--warning').trim(),
+    bgCard: style.getPropertyValue('--bg-card').trim()
+  };
+}
+
+function renderDashboardChips() {
+  var container = document.getElementById('chips-dashboard');
+  if (!container) return;
+  var html = '<button class="chip' + (dashboardTurmaFilter === 'todas' ? ' chip--active' : '') + '" data-turma="todas">' + t('dashboardAllClasses') + '</button>';
+  turmasCache.forEach(function(turma) {
+    html += '<button class="chip' + (dashboardTurmaFilter === turma.id ? ' chip--active' : '') + '" data-turma="' + turma.id + '">' + escapeHtml(turma.nome) + '</button>';
+  });
+  container.innerHTML = html;
+}
+
+function renderDashboard() {
+  renderDashboardChips();
+
+  var allEmprestimos = [];
+  db.collection('emprestimos').get().then(function(snap) {
+    snap.forEach(function(doc) {
+      allEmprestimos.push(Object.assign({ id: doc.id }, doc.data()));
+    });
+    updateDashboardData(allEmprestimos);
+  }).catch(function() {
+    showToast(i18n[currentLang].errorGeneric || 'Erro ao carregar dados', 'error');
+  });
+}
+
+function updateDashboardData(allEmprestimos) {
+  var emps = allEmprestimos;
+  var filteredLivros = livrosCache;
+  var filteredAlunos = alunosCache;
+
+  if (dashboardTurmaFilter !== 'todas') {
+    var turmaLivroIds = livrosCache.filter(function(l) { return l.turma_id === dashboardTurmaFilter; }).map(function(l) { return l.id; });
+    emps = allEmprestimos.filter(function(e) { return turmaLivroIds.indexOf(e.livro_id) !== -1; });
+    filteredLivros = livrosCache.filter(function(l) { return l.turma_id === dashboardTurmaFilter; });
+    filteredAlunos = alunosCache.filter(function(a) { return a.turma_id === dashboardTurmaFilter; });
+  }
+
+  var activeLoans = emps.filter(function(e) { return !e.devolvido; });
+
+  var kpiBooks = document.getElementById('dash-kpi-books');
+  var kpiLoans = document.getElementById('dash-kpi-loans');
+  var kpiPending = document.getElementById('dash-kpi-pending');
+  var kpiStudents = document.getElementById('dash-kpi-students');
+  if (kpiBooks) kpiBooks.textContent = filteredLivros.length;
+  if (kpiLoans) kpiLoans.textContent = emps.length;
+  if (kpiPending) kpiPending.textContent = activeLoans.length;
+  if (kpiStudents) kpiStudents.textContent = filteredAlunos.filter(function(a) { return a.ativo !== false; }).length;
+
+  var chartsEl = document.getElementById('dashboard-charts');
+  var emptyEl = document.getElementById('dashboard-empty');
+
+  if (emps.length === 0) {
+    if (chartsEl) chartsEl.hidden = true;
+    if (emptyEl) emptyEl.hidden = false;
+    destroyDashboardCharts();
+    return;
+  }
+
+  if (chartsEl) chartsEl.hidden = false;
+  if (emptyEl) emptyEl.hidden = true;
+
+  renderChartByClass(emps);
+  renderChartPopularBooks(emps);
+  renderChartOverTime(emps);
+}
+
+function destroyDashboardCharts() {
+  if (dashChartByClass) { dashChartByClass.destroy(); dashChartByClass = null; }
+  if (dashChartPopular) { dashChartPopular.destroy(); dashChartPopular = null; }
+  if (dashChartOverTime) { dashChartOverTime.destroy(); dashChartOverTime = null; }
+}
+
+function renderChartByClass(emps) {
+  var colors = getChartColors();
+  var countByTurma = {};
+  turmasCache.forEach(function(t) { countByTurma[t.id] = { name: t.nome, count: 0 }; });
+
+  emps.forEach(function(e) {
+    var livro = livrosCache.find(function(l) { return l.id === e.livro_id; });
+    if (livro && countByTurma[livro.turma_id]) {
+      countByTurma[livro.turma_id].count++;
+    }
+  });
+
+  var labels = [];
+  var data = [];
+  Object.keys(countByTurma).forEach(function(id) {
+    labels.push(countByTurma[id].name);
+    data.push(countByTurma[id].count);
+  });
+
+  var barColors = [
+    colors.accent,
+    colors.info,
+    colors.warning,
+    colors.textSecondary
+  ];
+
+  if (dashChartByClass) dashChartByClass.destroy();
+
+  var ctx = document.getElementById('chart-by-class');
+  if (!ctx) return;
+  dashChartByClass = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: data,
+        backgroundColor: barColors.slice(0, labels.length),
+        borderRadius: 8,
+        maxBarThickness: 48
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: colors.bgCard,
+          titleColor: colors.textSecondary,
+          bodyColor: colors.textSecondary,
+          borderColor: colors.border,
+          borderWidth: 1,
+          cornerRadius: 8,
+          padding: 10
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { color: colors.textMuted, font: { size: 12 } }
+        },
+        y: {
+          beginAtZero: true,
+          grid: { color: colors.border, drawBorder: false },
+          ticks: {
+            color: colors.textMuted,
+            font: { size: 12 },
+            stepSize: 1,
+            precision: 0
+          }
+        }
+      }
+    }
+  });
+}
+
+function renderChartPopularBooks(emps) {
+  var colors = getChartColors();
+  var countByBook = {};
+  emps.forEach(function(e) {
+    countByBook[e.livro_id] = (countByBook[e.livro_id] || 0) + 1;
+  });
+
+  var sorted = Object.keys(countByBook).map(function(id) {
+    var livro = livrosCache.find(function(l) { return l.id === id; });
+    return { id: id, name: livro ? livro.titulo : '—', count: countByBook[id] };
+  }).sort(function(a, b) { return b.count - a.count; }).slice(0, 10);
+
+  var labels = sorted.map(function(item) {
+    return item.name.length > 20 ? item.name.substring(0, 20) + '…' : item.name;
+  });
+  var data = sorted.map(function(item) { return item.count; });
+
+  if (dashChartPopular) dashChartPopular.destroy();
+
+  var ctx = document.getElementById('chart-popular-books');
+  if (!ctx) return;
+  dashChartPopular = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: data,
+        backgroundColor: colors.accent,
+        borderRadius: 6,
+        maxBarThickness: 24
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: colors.bgCard,
+          titleColor: colors.textSecondary,
+          bodyColor: colors.textSecondary,
+          borderColor: colors.border,
+          borderWidth: 1,
+          cornerRadius: 8,
+          padding: 10,
+          callbacks: {
+            title: function(items) {
+              var idx = items[0].dataIndex;
+              var livro = sorted[idx];
+              return livro ? livro.name : '';
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          beginAtZero: true,
+          grid: { color: colors.border, drawBorder: false },
+          ticks: { color: colors.textMuted, font: { size: 11 }, stepSize: 1, precision: 0 }
+        },
+        y: {
+          grid: { display: false },
+          ticks: { color: colors.textMuted, font: { size: 11 } }
+        }
+      }
+    }
+  });
+}
+
+function renderChartOverTime(emps) {
+  var colors = getChartColors();
+  var weekCounts = {};
+
+  emps.forEach(function(e) {
+    if (!e.data_emprestimo) return;
+    var d = e.data_emprestimo.toDate ? e.data_emprestimo.toDate() : new Date(e.data_emprestimo);
+    var oneJan = new Date(d.getFullYear(), 0, 1);
+    var weekNum = Math.ceil(((d - oneJan) / 86400000 + oneJan.getDay() + 1) / 7);
+    var key = d.getFullYear() + '-S' + String(weekNum).padStart(2, '0');
+    weekCounts[key] = (weekCounts[key] || 0) + 1;
+  });
+
+  var sortedWeeks = Object.keys(weekCounts).sort();
+  var labels = sortedWeeks.map(function(k) { return k.split('-')[1]; });
+  var data = sortedWeeks.map(function(k) { return weekCounts[k]; });
+
+  if (dashChartOverTime) dashChartOverTime.destroy();
+
+  var ctx = document.getElementById('chart-over-time');
+  if (!ctx) return;
+  dashChartOverTime = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: data,
+        borderColor: colors.accent,
+        backgroundColor: colors.accent + '20',
+        fill: true,
+        tension: 0.35,
+        pointRadius: 4,
+        pointBackgroundColor: colors.accent,
+        pointBorderColor: colors.bgCard,
+        pointBorderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: colors.bgCard,
+          titleColor: colors.textSecondary,
+          bodyColor: colors.textSecondary,
+          borderColor: colors.border,
+          borderWidth: 1,
+          cornerRadius: 8,
+          padding: 10
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { color: colors.textMuted, font: { size: 11 } }
+        },
+        y: {
+          beginAtZero: true,
+          grid: { color: colors.border, drawBorder: false },
+          ticks: { color: colors.textMuted, font: { size: 11 }, stepSize: 1, precision: 0 }
+        }
+      }
+    }
+  });
+}
+
+setupChips('chips-dashboard', function(chip) {
+  dashboardTurmaFilter = chip.dataset.turma;
+  renderDashboard();
+});
+
+
+/* ================================================================
    TEMA CLARO/ESCURO — TOGGLE
    ================================================================ */
 (function() {
@@ -4012,6 +4531,7 @@ document.addEventListener('click', function(e) {
       var next = getEffectiveTheme() === 'dark' ? 'light' : 'dark';
       root.setAttribute('data-theme', next);
       try { localStorage.setItem('leitura-theme', next); } catch(e) {}
+      if (currentScreen === 'dashboard') renderDashboard();
     });
   }
 })();
