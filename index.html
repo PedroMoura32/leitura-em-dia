@@ -1089,6 +1089,48 @@ img { max-width: 100%; display: block; }
   color: var(--text-muted);
 }
 
+.tarefa-card__author {
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.tarefa-card__delete {
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.tarefa-gallery__delete {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  background: rgba(0,0,0,0.55);
+  color: white;
+  border: none;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  z-index: 2;
+}
+
+.tarefa-gallery__item:hover .tarefa-gallery__delete,
+.tarefa-gallery__item:focus-within .tarefa-gallery__delete {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .tarefa-gallery__delete { opacity: 0.85; }
+}
+
+.tarefa-gallery__delete:hover {
+  background: var(--error);
+}
+
 .tarefa-fullscreen {
   position: fixed;
   inset: 0;
@@ -2912,6 +2954,10 @@ const i18n = {
     logoutSuccess: 'Você saiu do app',
     homeworkFilterWeek: 'Filtrar por semana...',
     homeworkGalleryEmpty: 'Nenhuma tarefa nesta semana',
+    homeworkAddedBy: 'Adicionado por',
+    homeworkDeleteConfirm: 'Excluir esta tarefa?',
+    homeworkDeleted: 'Tarefa excluída',
+    homeworkDeleteError: 'Erro ao excluir tarefa',
     importTitle: 'Importar dados',
     importDesc: 'Importe alunos e livros de uma planilha Excel. Baixe o template, preencha e envie.',
     downloadTemplate: 'Baixar template',
@@ -4015,7 +4061,8 @@ function salvarTarefa() {
     data: firebase.firestore.FieldValue.serverTimestamp(),
     imagem_data: tarefaImagemBlob,
     semana: semana,
-    ano: agora.getFullYear()
+    ano: agora.getFullYear(),
+    criado_por: auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : ''
   }).then(function() {
     showToast(t('homeworkSaved'), 'success');
     tarefaImagemBlob = null;
@@ -4097,6 +4144,7 @@ function renderTarefaView() {
       html += '<div class="tarefa-gallery__item" data-tarefa-idx="' + idx + '">' +
         '<img src="' + escapeAttr(tarefa.imagem_data || tarefa.imagem_url) + '" alt="Tarefa" loading="lazy">' +
         '<div class="tarefa-gallery__item-meta">' + dataStr + ' · S' + tarefa.semana + '</div>' +
+        '<button class="tarefa-gallery__delete" data-tarefa-delete="' + tarefa.id + '" aria-label="Excluir" title="Excluir"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>' +
         '</div>';
     });
     html += '</div>';
@@ -4106,12 +4154,16 @@ function renderTarefaView() {
     items.forEach(function(tarefa, idx) {
       var data = tarefa.data ? tarefa.data.toDate() : new Date();
       var dataStr = data.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      var addedBy = tarefa.criado_por ? '<div class="tarefa-card__author">' + t('homeworkAddedBy') + ' ' + escapeHtml(tarefa.criado_por) + '</div>' : '';
       html += '<div class="tarefa-card" data-tarefa-idx="' + idx + '">' +
         '<img class="tarefa-card__thumb" src="' + escapeAttr(tarefa.imagem_data || tarefa.imagem_url) + '" alt="Tarefa" loading="lazy">' +
         '<div class="tarefa-card__info">' +
         '<div class="tarefa-card__date">' + dataStr + '</div>' +
         '<div class="tarefa-card__meta">' + t('homeworkWeek') + ' ' + tarefa.semana + ' · ' + tarefa.serie + 'º Ano</div>' +
-        '</div></div>';
+        addedBy +
+        '</div>' +
+        '<button class="btn-icon btn-icon--danger tarefa-card__delete" data-tarefa-delete="' + tarefa.id + '" aria-label="Excluir" title="Excluir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>' +
+        '</div>';
     });
     container.innerHTML = html;
   }
@@ -4173,7 +4225,23 @@ function abrirTarefaFullscreen(idx) {
   document.addEventListener('keydown', keyHandler);
 }
 
+function excluirTarefa(id) {
+  if (!confirm(t('homeworkDeleteConfirm'))) return;
+  db.collection('tarefas_casa').doc(id).delete().then(function() {
+    showToast(t('homeworkDeleted'), 'success');
+    renderTarefaTimeline();
+  }).catch(function() {
+    showToast(t('homeworkDeleteError'), 'error');
+  });
+}
+
 document.getElementById('tarefa-timeline').addEventListener('click', function(e) {
+  var deleteBtn = e.target.closest('[data-tarefa-delete]');
+  if (deleteBtn) {
+    e.stopPropagation();
+    excluirTarefa(deleteBtn.dataset.tarefaDelete);
+    return;
+  }
   var item = e.target.closest('[data-tarefa-idx]');
   if (!item) return;
   abrirTarefaFullscreen(parseInt(item.dataset.tarefaIdx));

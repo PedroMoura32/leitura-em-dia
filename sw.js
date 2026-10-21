@@ -1,4 +1,4 @@
-var CACHE_NAME = 'leitura-em-dia-v3';
+var CACHE_NAME = 'leitura-em-dia-v4';
 
 var STATIC_ASSETS = [
   '/leitura-em-dia/',
