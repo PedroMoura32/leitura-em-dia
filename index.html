@@ -1119,6 +1119,146 @@ img { max-width: 100%; display: block; }
 
 
 /* ================================================================
+   GALERIA DE TAREFAS
+   ================================================================ */
+.tarefa-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.tarefa-toolbar__filter {
+  flex: 1;
+  min-width: 0;
+}
+
+.tarefa-toolbar__filter input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 0.8125rem;
+  font-family: inherit;
+}
+
+.tarefa-toolbar__filter input:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--accent-light);
+}
+
+.tarefa-view-toggle {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.tarefa-view-toggle button {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: var(--bg-card);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tarefa-view-toggle button.active {
+  background: var(--accent);
+  color: var(--text-on-accent);
+}
+
+.tarefa-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+@media (min-width: 560px) {
+  .tarefa-gallery {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+}
+
+.tarefa-gallery__item {
+  aspect-ratio: 1;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  background: var(--bg-secondary);
+}
+
+.tarefa-gallery__item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.2s ease;
+}
+
+.tarefa-gallery__item:hover img {
+  transform: scale(1.05);
+}
+
+.tarefa-gallery__item-meta {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 4px 6px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.6));
+  color: white;
+  font-size: 0.625rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.tarefa-fullscreen__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  background: rgba(255,255,255,0.15);
+  color: white;
+  border: none;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  z-index: 101;
+}
+
+.tarefa-fullscreen__nav:hover {
+  background: rgba(255,255,255,0.3);
+}
+
+.tarefa-fullscreen__nav--prev { left: 12px; }
+.tarefa-fullscreen__nav--next { right: 12px; }
+
+.tarefa-fullscreen__info {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  background: rgba(0,0,0,0.5);
+  color: white;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+/* ================================================================
    PERFIL DO ALUNO
    ================================================================ */
 #screen-perfil-aluno {
@@ -1633,6 +1773,8 @@ img { max-width: 100%; display: block; }
   bottom: calc(100px + env(safe-area-inset-bottom, 0px));
   left: 50%;
   transform: translateX(-50%) translateY(100px);
+  opacity: 0;
+  visibility: hidden;
   background: var(--text-primary);
   color: var(--bg-primary);
   padding: 12px 24px;
@@ -1641,7 +1783,7 @@ img { max-width: 100%; display: block; }
   font-weight: 500;
   box-shadow: var(--shadow-lg);
   z-index: 30;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
   pointer-events: none;
   max-width: calc(100vw - 32px);
   text-align: center;
@@ -1649,6 +1791,8 @@ img { max-width: 100%; display: block; }
 
 .toast--visible {
   transform: translateX(-50%) translateY(0);
+  opacity: 1;
+  visibility: visible;
 }
 
 .toast--success { background: var(--success); color: var(--text-on-accent); }
@@ -2140,6 +2284,26 @@ img { max-width: 100%; display: block; }
   </div>
 </section>
 
+<!-- Importação em massa -->
+<div id="import-section" class="mt-24" hidden>
+  <div class="section-title" data-i18n="importTitle">Importar dados</div>
+  <div class="card" style="padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+    <p style="font-size: 0.8125rem; color: var(--text-secondary); margin: 0;" data-i18n="importDesc">Importe alunos e livros de uma planilha Excel. Baixe o template, preencha e envie.</p>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+      <button class="btn-secondary" id="btn-download-template" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span data-i18n="downloadTemplate">Baixar template</span>
+      </button>
+      <button class="btn-secondary" id="btn-import-excel" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <span data-i18n="importExcel">Importar planilha</span>
+      </button>
+    </div>
+    <input type="file" id="input-import-excel" accept=".xlsx,.xls,.csv" hidden>
+    <div id="import-status" hidden></div>
+  </div>
+</div>
+
 <!-- FAB do Cadastros -->
 <button class="fab" id="fab-cadastros" hidden aria-label="Adicionar">
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
@@ -2177,6 +2341,19 @@ img { max-width: 100%; display: block; }
 
   <div class="mt-24">
     <div class="section-title" data-i18n="recentHomework">Tarefas recentes</div>
+    <div class="tarefa-toolbar">
+      <div class="tarefa-toolbar__filter">
+        <input type="number" id="tarefa-filter-semana" min="1" max="53" aria-label="Filtrar por semana" data-i18n-placeholder="homeworkFilterWeek" placeholder="Filtrar por semana...">
+      </div>
+      <div class="tarefa-view-toggle">
+        <button id="tarefa-view-list" class="active" aria-label="Visualização em lista" title="Lista">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        </button>
+        <button id="tarefa-view-grid" aria-label="Visualização em galeria" title="Galeria">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        </button>
+      </div>
+    </div>
     <div id="tarefa-timeline">
       <div class="empty-state">
         <div class="empty-state__icon">
@@ -2371,6 +2548,7 @@ img { max-width: 100%; display: block; }
      CHART.JS (v4.4.1)
      ════════════════════════════════════════════════════════════════ -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <!-- ════════════════════════════════════════════════════════════════
      FIREBASE SDK (v10.12.2 — compat)
@@ -2519,6 +2697,19 @@ const i18n = {
     homeworkWeek: 'Semana',
     homeworkUploading: 'Enviando...',
     homeworkChangePhoto: 'Trocar foto',
+    homeworkFilterWeek: 'Filtrar por semana...',
+    homeworkGalleryEmpty: 'Nenhuma tarefa nesta semana',
+    importTitle: 'Importar dados',
+    importDesc: 'Importe alunos e livros de uma planilha Excel. Baixe o template, preencha e envie.',
+    downloadTemplate: 'Baixar template',
+    importExcel: 'Importar planilha',
+    importReading: 'Lendo planilha...',
+    importSuccess: 'Importação concluída!',
+    importError: 'Erro ao importar planilha',
+    importStudentsCreated: 'alunos criados',
+    importBooksCreated: 'livros criados',
+    importNoData: 'Nenhum dado encontrado na planilha',
+    importDuplicateSkipped: 'duplicados ignorados',
     profileTitle: 'Perfil do Aluno',
     profileHistory: 'Histórico de leituras',
     profileBooksRead: 'Livros lidos',
@@ -2598,6 +2789,8 @@ function navigateTo(screen) {
 
   var fab = document.getElementById('fab-cadastros');
   if (fab) fab.hidden = screen !== 'cadastros';
+  var importSec = document.getElementById('import-section');
+  if (importSec) importSec.hidden = screen !== 'cadastros';
 
   var bottomNav = document.querySelector('.bottom-nav');
   if (bottomNav) bottomNav.hidden = screen === 'perfil-aluno' || screen === 'perfil-livro';
@@ -2699,21 +2892,28 @@ if (tabBar) {
 /* ================================================================
    TOAST — NOTIFICAÇÕES
    ================================================================ */
+var toastTimer = null;
 function showToast(message, type) {
   var toast = document.getElementById('toast');
   if (!toast) return;
 
+  if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
+
+  toast.classList.remove('toast--visible');
   toast.textContent = message;
   toast.className = 'toast';
   if (type === 'success') toast.classList.add('toast--success');
   if (type === 'error') toast.classList.add('toast--error');
 
   requestAnimationFrame(function() {
-    toast.classList.add('toast--visible');
+    requestAnimationFrame(function() {
+      toast.classList.add('toast--visible');
+    });
   });
 
-  setTimeout(function() {
+  toastTimer = setTimeout(function() {
     toast.classList.remove('toast--visible');
+    toastTimer = null;
   }, 3000);
 }
 
@@ -3635,6 +3835,10 @@ if (btnSalvarTarefa) {
   btnSalvarTarefa.addEventListener('click', salvarTarefa);
 }
 
+var tarefaViewMode = 'list';
+var tarefaCache = [];
+var tarefaFilterSemana = null;
+
 function renderTarefaTimeline() {
   var container = document.getElementById('tarefa-timeline');
   if (!container) return;
@@ -3642,57 +3846,300 @@ function renderTarefaTimeline() {
   db.collection('tarefas_casa')
     .where('serie', '==', tarefaSerieSelecionada)
     .orderBy('data', 'desc')
-    .limit(20)
+    .limit(50)
     .get().then(function(snap) {
-      if (snap.empty) {
-        container.innerHTML =
-          '<div class="empty-state">' +
-          '<div class="empty-state__icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>' +
-          '<div class="empty-state__title">' + t('noHomeworkTitle') + '</div>' +
-          '<div class="empty-state__text">' + t('noHomeworkText') + '</div>' +
-          '</div>';
-        return;
-      }
-      var html = '';
+      tarefaCache = [];
       snap.forEach(function(doc) {
-        var tarefa = doc.data();
-        var data = tarefa.data ? tarefa.data.toDate() : new Date();
-        var dataStr = data.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-
-        html += '<div class="tarefa-card" data-img-url="' + escapeAttr(tarefa.imagem_url) + '">' +
-          '<img class="tarefa-card__thumb" src="' + escapeAttr(tarefa.imagem_url) + '" alt="Tarefa" loading="lazy">' +
-          '<div class="tarefa-card__info">' +
-          '<div class="tarefa-card__date">' + dataStr + '</div>' +
-          '<div class="tarefa-card__meta">' + t('homeworkWeek') + ' ' + tarefa.semana + ' · ' + tarefa.serie + 'º Ano</div>' +
-          '</div></div>';
+        var d = doc.data();
+        d.id = doc.id;
+        tarefaCache.push(d);
       });
-      container.innerHTML = html;
+      renderTarefaView();
     });
 }
 
-document.getElementById('tarefa-timeline').addEventListener('click', function(e) {
-  var card = e.target.closest('.tarefa-card');
-  if (!card) return;
-  var imgUrl = card.dataset.imgUrl;
-  if (!imgUrl) return;
+function renderTarefaView() {
+  var container = document.getElementById('tarefa-timeline');
+  if (!container) return;
 
-  var overlay = document.createElement('div');
-  overlay.className = 'tarefa-fullscreen';
-  overlay.innerHTML =
-    '<button class="tarefa-fullscreen__close" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>' +
-    '<img src="' + escapeAttr(imgUrl) + '" alt="Tarefa em tela cheia">';
+  var items = tarefaCache;
+  if (tarefaFilterSemana) {
+    items = items.filter(function(t) { return t.semana === tarefaFilterSemana; });
+  }
+
+  if (items.length === 0) {
+    var msg = tarefaFilterSemana ? t('homeworkGalleryEmpty') : t('noHomeworkTitle');
+    var sub = tarefaFilterSemana ? '' : t('noHomeworkText');
+    container.innerHTML =
+      '<div class="empty-state">' +
+      '<div class="empty-state__icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>' +
+      '<div class="empty-state__title">' + msg + '</div>' +
+      (sub ? '<div class="empty-state__text">' + sub + '</div>' : '') +
+      '</div>';
+    return;
+  }
+
+  if (tarefaViewMode === 'grid') {
+    var html = '<div class="tarefa-gallery">';
+    items.forEach(function(tarefa, idx) {
+      var data = tarefa.data ? tarefa.data.toDate() : new Date();
+      var dataStr = data.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+      html += '<div class="tarefa-gallery__item" data-tarefa-idx="' + idx + '">' +
+        '<img src="' + escapeAttr(tarefa.imagem_url) + '" alt="Tarefa" loading="lazy">' +
+        '<div class="tarefa-gallery__item-meta">' + dataStr + ' · S' + tarefa.semana + '</div>' +
+        '</div>';
+    });
+    html += '</div>';
+    container.innerHTML = html;
+  } else {
+    var html = '';
+    items.forEach(function(tarefa, idx) {
+      var data = tarefa.data ? tarefa.data.toDate() : new Date();
+      var dataStr = data.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      html += '<div class="tarefa-card" data-tarefa-idx="' + idx + '">' +
+        '<img class="tarefa-card__thumb" src="' + escapeAttr(tarefa.imagem_url) + '" alt="Tarefa" loading="lazy">' +
+        '<div class="tarefa-card__info">' +
+        '<div class="tarefa-card__date">' + dataStr + '</div>' +
+        '<div class="tarefa-card__meta">' + t('homeworkWeek') + ' ' + tarefa.semana + ' · ' + tarefa.serie + 'º Ano</div>' +
+        '</div></div>';
+    });
+    container.innerHTML = html;
+  }
+}
+
+function abrirTarefaFullscreen(idx) {
+  var items = tarefaCache;
+  if (tarefaFilterSemana) {
+    items = items.filter(function(t) { return t.semana === tarefaFilterSemana; });
+  }
+  if (!items[idx]) return;
+
+  var currentIdx = idx;
+
+  function buildOverlay() {
+    var tarefa = items[currentIdx];
+    var data = tarefa.data ? tarefa.data.toDate() : new Date();
+    var dataStr = data.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+    var overlay = document.createElement('div');
+    overlay.className = 'tarefa-fullscreen';
+    overlay.innerHTML =
+      '<button class="tarefa-fullscreen__close" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>' +
+      (currentIdx > 0 ? '<button class="tarefa-fullscreen__nav tarefa-fullscreen__nav--prev" aria-label="Anterior"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>' : '') +
+      (currentIdx < items.length - 1 ? '<button class="tarefa-fullscreen__nav tarefa-fullscreen__nav--next" aria-label="Próxima"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></button>' : '') +
+      '<img src="' + escapeAttr(tarefa.imagem_url) + '" alt="Tarefa em tela cheia">' +
+      '<div class="tarefa-fullscreen__info">' + dataStr + ' · ' + t('homeworkWeek') + ' ' + tarefa.semana + ' · ' + tarefa.serie + 'º Ano</div>';
+    return overlay;
+  }
+
+  var overlay = buildOverlay();
   document.body.appendChild(overlay);
 
-  function fechar() { overlay.remove(); }
-  overlay.addEventListener('click', function(ev) {
-    if (ev.target === overlay || ev.target.closest('.tarefa-fullscreen__close')) fechar();
-  });
-  document.addEventListener('keydown', function handler(ev) {
-    if (ev.key === 'Escape') { fechar(); document.removeEventListener('keydown', handler); }
-  });
+  function fechar() { overlay.remove(); document.removeEventListener('keydown', keyHandler); }
+  function navegar(dir) {
+    var novoIdx = currentIdx + dir;
+    if (novoIdx < 0 || novoIdx >= items.length) return;
+    currentIdx = novoIdx;
+    var novoOverlay = buildOverlay();
+    overlay.replaceWith(novoOverlay);
+    overlay = novoOverlay;
+    overlay.addEventListener('click', clickHandler);
+  }
+
+  function clickHandler(ev) {
+    if (ev.target.closest('.tarefa-fullscreen__close')) fechar();
+    else if (ev.target.closest('.tarefa-fullscreen__nav--prev')) navegar(-1);
+    else if (ev.target.closest('.tarefa-fullscreen__nav--next')) navegar(1);
+    else if (ev.target === overlay) fechar();
+  }
+
+  function keyHandler(ev) {
+    if (ev.key === 'Escape') fechar();
+    else if (ev.key === 'ArrowLeft') navegar(-1);
+    else if (ev.key === 'ArrowRight') navegar(1);
+  }
+
+  overlay.addEventListener('click', clickHandler);
+  document.addEventListener('keydown', keyHandler);
+}
+
+document.getElementById('tarefa-timeline').addEventListener('click', function(e) {
+  var item = e.target.closest('[data-tarefa-idx]');
+  if (!item) return;
+  abrirTarefaFullscreen(parseInt(item.dataset.tarefaIdx));
 });
 
+var btnViewList = document.getElementById('tarefa-view-list');
+var btnViewGrid = document.getElementById('tarefa-view-grid');
+if (btnViewList && btnViewGrid) {
+  btnViewList.addEventListener('click', function() {
+    tarefaViewMode = 'list';
+    btnViewList.classList.add('active');
+    btnViewGrid.classList.remove('active');
+    renderTarefaView();
+  });
+  btnViewGrid.addEventListener('click', function() {
+    tarefaViewMode = 'grid';
+    btnViewGrid.classList.add('active');
+    btnViewList.classList.remove('active');
+    renderTarefaView();
+  });
+}
+
+var inputFilterSemana = document.getElementById('tarefa-filter-semana');
+if (inputFilterSemana) {
+  inputFilterSemana.addEventListener('input', function() {
+    var val = this.value.trim();
+    tarefaFilterSemana = val ? parseInt(val) : null;
+    renderTarefaView();
+  });
+}
+
 renderTarefaTimeline();
+
+
+/* ================================================================
+   IMPORTAÇÃO EM MASSA — TEMPLATE EXCEL
+   ================================================================ */
+var importSection = document.getElementById('import-section');
+
+function showImportSection() {
+  if (importSection) importSection.hidden = false;
+}
+
+function hideImportSection() {
+  if (importSection) importSection.hidden = true;
+}
+
+var btnDownloadTemplate = document.getElementById('btn-download-template');
+if (btnDownloadTemplate) {
+  btnDownloadTemplate.addEventListener('click', function() {
+    if (typeof XLSX === 'undefined') { showToast(t('importError'), 'error'); return; }
+
+    var wb = XLSX.utils.book_new();
+
+    var alunosData = [['nome', 'turma']];
+    alunosData.push(['Maria Silva', '3º Ano A']);
+    alunosData.push(['João Santos', '5º Ano B']);
+    var wsAlunos = XLSX.utils.aoa_to_sheet(alunosData);
+    wsAlunos['!cols'] = [{ wch: 30 }, { wch: 15 }];
+    XLSX.utils.book_append_sheet(wb, wsAlunos, 'Alunos');
+
+    var livrosData = [['titulo', 'numero', 'turma']];
+    livrosData.push(['O Pequeno Príncipe', '42', '3º Ano A']);
+    livrosData.push(['A Bela Adormecida', '146A', '5º Ano B']);
+    var wsLivros = XLSX.utils.aoa_to_sheet(livrosData);
+    wsLivros['!cols'] = [{ wch: 35 }, { wch: 10 }, { wch: 15 }];
+    XLSX.utils.book_append_sheet(wb, wsLivros, 'Livros');
+
+    XLSX.writeFile(wb, 'template_leitura_em_dia.xlsx');
+  });
+}
+
+var btnImportExcel = document.getElementById('btn-import-excel');
+var inputImportExcel = document.getElementById('input-import-excel');
+if (btnImportExcel && inputImportExcel) {
+  btnImportExcel.addEventListener('click', function() { inputImportExcel.click(); });
+
+  inputImportExcel.addEventListener('change', function() {
+    var file = this.files[0];
+    if (!file) return;
+
+    var statusEl = document.getElementById('import-status');
+    if (statusEl) { statusEl.hidden = false; statusEl.innerHTML = '<p style="color:var(--text-secondary);font-size:0.8125rem;">' + t('importReading') + '</p>'; }
+
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        var wb = XLSX.read(e.target.result, { type: 'array' });
+        processImport(wb, statusEl);
+      } catch (err) {
+        showToast(t('importError'), 'error');
+        if (statusEl) statusEl.hidden = true;
+      }
+    };
+    reader.readAsArrayBuffer(file);
+    inputImportExcel.value = '';
+  });
+}
+
+function processImport(wb, statusEl) {
+  var turmaMap = {};
+  turmasCache.forEach(function(t) { turmaMap[t.nome.toLowerCase()] = t.id; });
+
+  var promises = [];
+  var alunosCriados = 0;
+  var livrosCriados = 0;
+  var duplicados = 0;
+
+  var alunosSheet = wb.Sheets['Alunos'] || wb.Sheets[wb.SheetNames[0]];
+  if (alunosSheet) {
+    var alunosRows = XLSX.utils.sheet_to_json(alunosSheet);
+    alunosRows.forEach(function(row) {
+      var nome = (row.nome || row.Nome || '').trim();
+      var turma = (row.turma || row.Turma || '').trim();
+      if (!nome || !turma) return;
+
+      var turmaId = turmaMap[turma.toLowerCase()];
+      if (!turmaId) return;
+
+      var jaExiste = alunosCache.some(function(a) {
+        return a.nome.toLowerCase() === nome.toLowerCase() && a.turma_id === turmaId;
+      });
+      if (jaExiste) { duplicados++; return; }
+
+      promises.push(
+        db.collection('alunos').add({ nome: nome, turma_id: turmaId, ativo: true }).then(function() { alunosCriados++; })
+      );
+    });
+  }
+
+  var livrosSheet = wb.Sheets['Livros'] || wb.Sheets[wb.SheetNames[1]];
+  if (livrosSheet) {
+    var livrosRows = XLSX.utils.sheet_to_json(livrosSheet);
+    livrosRows.forEach(function(row) {
+      var titulo = (row.titulo || row.Titulo || row['título'] || row['Título'] || '').trim();
+      var numero = String(row.numero || row.Numero || row['número'] || row['Número'] || '').trim();
+      var turma = (row.turma || row.Turma || '').trim();
+      if (!titulo || !turma) return;
+
+      var turmaId = turmaMap[turma.toLowerCase()];
+      if (!turmaId) return;
+
+      var jaExiste = livrosCache.some(function(l) {
+        return l.numero && l.numero.toLowerCase() === numero.toLowerCase() && l.turma_id === turmaId;
+      });
+      if (jaExiste && numero) { duplicados++; return; }
+
+      promises.push(
+        db.collection('livros').add({ titulo: titulo, numero: numero, turma_id: turmaId, disponivel: true }).then(function() { livrosCriados++; })
+      );
+    });
+  }
+
+  if (promises.length === 0) {
+    showToast(t('importNoData'), 'error');
+    if (statusEl) statusEl.hidden = true;
+    return;
+  }
+
+  Promise.all(promises).then(function() {
+    var msg = t('importSuccess') + ' ' + alunosCriados + ' ' + t('importStudentsCreated') + ', ' + livrosCriados + ' ' + t('importBooksCreated');
+    if (duplicados > 0) msg += ' (' + duplicados + ' ' + t('importDuplicateSkipped') + ')';
+    showToast(msg, 'success');
+    if (statusEl) {
+      statusEl.innerHTML = '<p style="color:var(--success);font-size:0.8125rem;">' + msg + '</p>';
+    }
+    Promise.all([carregarTurmas(), carregarAlunos(), carregarLivros()]).then(function() {
+      renderAlunos();
+      renderLivros();
+      renderActivityHome();
+    });
+  }).catch(function() {
+    showToast(t('importError'), 'error');
+    if (statusEl) statusEl.hidden = true;
+  });
+}
 
 
 /* ================================================================
