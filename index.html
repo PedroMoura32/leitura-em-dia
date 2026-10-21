@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#059669">
+  <meta name="theme-color" content="#971A1D">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="description" content="Controle de empréstimo de livros e tarefas de casa para escolas">
@@ -18,41 +18,41 @@
    DESIGN SYSTEM — Leitura em Dia
    ================================================================ */
 
-/* ── Paleta de Cores (Modo Claro) ── */
+/* ── Paleta de Cores (Modo Claro) — Identidade EAB ── */
 :root {
-  --accent: #059669;
-  --accent-light: #ECFDF5;
-  --accent-hover: #047857;
-  --accent-surface: #D1FAE5;
+  --accent: #971A1D;
+  --accent-light: #FCEAEA;
+  --accent-hover: #7A1517;
+  --accent-surface: #F5D0D0;
 
-  --bg-primary: #F6F7FA;
-  --bg-secondary: #F9FAFB;
+  --bg-primary: #FBF5F5;
+  --bg-secondary: #F5EDED;
   --bg-card: #FFFFFF;
 
-  --text-primary: #141520;
-  --text-secondary: #5E6070;
-  --text-muted: #9496A8;
+  --text-primary: #242424;
+  --text-secondary: #636363;
+  --text-muted: #9A9090;
   --text-on-accent: #FFFFFF;
 
-  --border: #E4E5EC;
-  --border-light: #EEEEF3;
-  --border-focus: #059669;
+  --border: #E5E0E0;
+  --border-light: #EDE8E8;
+  --border-focus: #971A1D;
 
   --nav-bg: #FFFFFF;
-  --nav-border: #E4E5EC;
+  --nav-border: #E5E0E0;
 
-  --success: #059669;
-  --warning: #D97706;
+  --success: #2E7D32;
+  --warning: #F59E0B;
   --warning-light: #FFFBEB;
   --warning-surface: #FEF3C7;
-  --error: #DC2626;
+  --error: #D32F2F;
   --error-light: #FEF2F2;
   --error-surface: #FECACA;
-  --info: #3B82F6;
+  --info: #1976D2;
 
-  --shadow-sm: 0 1px 3px rgba(20,21,32,0.05);
-  --shadow-md: 0 4px 16px rgba(20,21,32,0.07);
-  --shadow-lg: 0 8px 32px rgba(20,21,32,0.10);
+  --shadow-sm: 0 1px 3px rgba(36,36,36,0.05);
+  --shadow-md: 0 4px 16px rgba(36,36,36,0.07);
+  --shadow-lg: 0 8px 32px rgba(36,36,36,0.10);
 
   --radius: 16px;
   --radius-sm: 10px;
@@ -63,29 +63,29 @@
   --font-body: 'DM Sans', system-ui, sans-serif;
 }
 
-/* ── Modo Escuro (prefers-color-scheme) ── */
+/* ── Modo Escuro (prefers-color-scheme) — Identidade EAB ── */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --accent: #34D399;
-    --accent-light: #132E1D;
-    --accent-hover: #6EE7B7;
-    --accent-surface: #064E3B;
+    --accent: #E57373;
+    --accent-light: #3D1517;
+    --accent-hover: #EF9A9A;
+    --accent-surface: #4D1A1C;
 
-    --bg-primary: #1E2030;
-    --bg-secondary: #262A3D;
-    --bg-card: #262A3D;
+    --bg-primary: #1A1212;
+    --bg-secondary: #2A1E1E;
+    --bg-card: #2A1E1E;
 
-    --text-primary: #E8E9F0;
-    --text-secondary: #A0A2B4;
-    --text-muted: #7E809A;
-    --text-on-accent: #111827;
+    --text-primary: #F5F0F0;
+    --text-secondary: #A89E9E;
+    --text-muted: #8A8080;
+    --text-on-accent: #1A1212;
 
-    --border: #343750;
-    --border-light: #2C2F45;
-    --border-focus: #34D399;
+    --border: #3D3232;
+    --border-light: #332828;
+    --border-focus: #E57373;
 
-    --nav-bg: #1A1C2E;
-    --nav-border: #343750;
+    --nav-bg: #150E0E;
+    --nav-border: #3D3232;
 
     --warning: #FBBF24;
     --warning-light: #362D12;
@@ -93,7 +93,7 @@
     --error: #F87171;
     --error-light: #3A1515;
     --error-surface: #991B1B;
-    --success: #34D399;
+    --success: #66BB6A;
 
     --shadow-sm: 0 1px 3px rgba(0,0,0,0.20);
     --shadow-md: 0 4px 16px rgba(0,0,0,0.25);
@@ -103,28 +103,28 @@
   }
 }
 
-/* ── Modo Escuro (forçado via data-theme) ── */
+/* ── Modo Escuro (forçado via data-theme) — Identidade EAB ── */
 :root[data-theme="dark"] {
-  --accent: #34D399;
-  --accent-light: #132E1D;
-  --accent-hover: #6EE7B7;
-  --accent-surface: #064E3B;
+  --accent: #E57373;
+  --accent-light: #3D1517;
+  --accent-hover: #EF9A9A;
+  --accent-surface: #4D1A1C;
 
-  --bg-primary: #1E2030;
-  --bg-secondary: #262A3D;
-  --bg-card: #262A3D;
+  --bg-primary: #1A1212;
+  --bg-secondary: #2A1E1E;
+  --bg-card: #2A1E1E;
 
-  --text-primary: #E8E9F0;
-  --text-secondary: #A0A2B4;
-  --text-muted: #7E809A;
-  --text-on-accent: #111827;
+  --text-primary: #F5F0F0;
+  --text-secondary: #A89E9E;
+  --text-muted: #8A8080;
+  --text-on-accent: #1A1212;
 
-  --border: #343750;
-  --border-light: #2C2F45;
-  --border-focus: #34D399;
+  --border: #3D3232;
+  --border-light: #332828;
+  --border-focus: #E57373;
 
-  --nav-bg: #1A1C2E;
-  --nav-border: #343750;
+  --nav-bg: #150E0E;
+  --nav-border: #3D3232;
 
   --warning: #FBBF24;
   --warning-light: #362D12;
@@ -132,7 +132,7 @@
   --error: #F87171;
   --error-light: #3A1515;
   --error-surface: #991B1B;
-  --success: #34D399;
+  --success: #66BB6A;
 
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.20);
   --shadow-md: 0 4px 16px rgba(0,0,0,0.25);
@@ -525,7 +525,7 @@ img { max-width: 100%; display: block; }
 .input-group input:focus,
 .input-group select:focus {
   border-color: var(--border-focus);
-  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+  box-shadow: 0 0 0 3px rgba(151, 26, 29, 0.1);
 }
 
 .input-group input::placeholder { color: var(--text-muted); }
