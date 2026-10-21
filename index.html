@@ -4050,14 +4050,17 @@ function renderTarefaTimeline() {
 
   db.collection('tarefas_casa')
     .where('serie', '==', tarefaSerieSelecionada)
-    .orderBy('data', 'desc')
-    .limit(50)
     .get().then(function(snap) {
       tarefaCache = [];
       snap.forEach(function(doc) {
         var d = doc.data();
         d.id = doc.id;
         tarefaCache.push(d);
+      });
+      tarefaCache.sort(function(a, b) {
+        var da = a.data ? (a.data.toDate ? a.data.toDate() : new Date(a.data)) : new Date(0);
+        var db2 = b.data ? (b.data.toDate ? b.data.toDate() : new Date(b.data)) : new Date(0);
+        return db2 - da;
       });
       renderTarefaView();
     }).catch(function() {
