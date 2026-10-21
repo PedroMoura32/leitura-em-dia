@@ -1,10 +1,19 @@
-var CACHE_NAME = 'leitura-em-dia-v1';
+var CACHE_NAME = 'leitura-em-dia-v2';
 
 var STATIC_ASSETS = [
   '/leitura-em-dia/',
   '/leitura-em-dia/index.html',
   '/leitura-em-dia/manifest.json',
-  'https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap'
+  '/leitura-em-dia/firebase-config.js',
+  '/leitura-em-dia/icons/icon-192.png',
+  '/leitura-em-dia/icons/icon-512.png',
+  'https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap',
+  'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',
+  'https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js',
+  'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js',
+  'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js',
+  'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js'
 ];
 
 self.addEventListener('install', function(event) {
@@ -45,10 +54,11 @@ self.addEventListener('fetch', function(event) {
       })
       .catch(function() {
         return caches.match(event.request).then(function(cached) {
-          return cached || new Response('Offline — conecte-se à internet para usar o app.', {
-            status: 503,
-            headers: { 'Content-Type': 'text/plain; charset=UTF-8' }
-          });
+          if (cached) return cached;
+          if (event.request.mode === 'navigate') {
+            return caches.match('/leitura-em-dia/index.html');
+          }
+          return new Response('Offline', { status: 503 });
         });
       })
   );
