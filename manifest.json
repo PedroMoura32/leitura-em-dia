@@ -6,8 +6,8 @@
   "scope": "/leitura-em-dia/",
   "display": "standalone",
   "orientation": "portrait",
-  "theme_color": "#971A1D",
-  "background_color": "#FFFFFF",
+  "theme_color": "#1F7A8C",
+  "background_color": "#FFF9EE",
   "lang": "pt-BR",
   "categories": ["education", "productivity"],
   "icons": [

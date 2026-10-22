@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#971A1D">
+  <meta name="theme-color" content="#1F7A8C">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="description" content="Controle de empréstimo de livros e tarefas de casa para escolas">
@@ -11,89 +11,96 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap">
 
 <style>
 /* ================================================================
    DESIGN SYSTEM — Leitura em Dia
    ================================================================ */
 
-/* ── Paleta de Cores (Modo Claro) — Identidade EAB ── */
+/* ── Paleta de Cores (Modo Claro) — Leitura em Dia ── */
 :root {
-  --accent: #971A1D;
-  --accent-light: #FCEAEA;
-  --accent-hover: #7A1517;
-  --accent-surface: #F5D0D0;
+  --accent: #1F7A8C;
+  --accent-light: #E3F3F6;
+  --accent-hover: #18616F;
+  --accent-surface: #C5E4EA;
+  --highlight: #F4B942;
+  --highlight-text: #2B2D42;
 
-  --bg-primary: #FBF5F5;
-  --bg-secondary: #F5EDED;
+  --bg-primary: #FFF9EE;
+  --bg-secondary: #FFF3DD;
   --bg-card: #FFFFFF;
 
-  --text-primary: #242424;
-  --text-secondary: #636363;
-  --text-muted: #9A9090;
+  --text-primary: #2B2D42;
+  --text-secondary: #5B6070;
+  --text-muted: #8A8E9E;
   --text-on-accent: #FFFFFF;
 
-  --border: #E5E0E0;
-  --border-light: #EDE8E8;
-  --border-focus: #971A1D;
+  --border: #E8DFCB;
+  --border-light: #F0E8D8;
+  --border-focus: #1F7A8C;
 
   --nav-bg: #FFFFFF;
-  --nav-border: #E5E0E0;
+  --nav-border: #E8DFCB;
 
-  --success: #2E7D32;
-  --warning: #F59E0B;
-  --warning-light: #FFFBEB;
-  --warning-surface: #FEF3C7;
-  --error: #D32F2F;
-  --error-light: #FEF2F2;
+  --success: #4CAF7A;
+  --warning: #F28C28;
+  --warning-light: #FFF1DE;
+  --warning-surface: #FFE0B2;
+  --warning-text: #B35A00;
+  --error: #D64545;
+  --error-light: #FDECEC;
   --error-surface: #FECACA;
   --info: #1976D2;
 
-  --shadow-sm: 0 1px 3px rgba(36,36,36,0.05);
-  --shadow-md: 0 4px 16px rgba(36,36,36,0.07);
-  --shadow-lg: 0 8px 32px rgba(36,36,36,0.10);
+  --shadow-sm: 0 1px 3px rgba(43,45,66,0.05);
+  --shadow-md: 0 4px 16px rgba(43,45,66,0.07);
+  --shadow-lg: 0 8px 32px rgba(43,45,66,0.10);
 
-  --radius: 16px;
-  --radius-sm: 10px;
-  --radius-xs: 6px;
+  --radius: 20px;
+  --radius-sm: 12px;
+  --radius-xs: 8px;
   --radius-full: 100px;
+  --radius-btn: 16px;
 
-  --font-display: 'Outfit', system-ui, sans-serif;
-  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-display: 'Nunito', system-ui, sans-serif;
+  --font-body: 'Nunito', system-ui, sans-serif;
 }
 
-/* ── Modo Escuro (prefers-color-scheme) — Identidade EAB ── */
+/* ── Modo Escuro (prefers-color-scheme) — Leitura em Dia ── */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --accent: #E57373;
-    --accent-light: #3D1517;
-    --accent-hover: #EF9A9A;
-    --accent-surface: #4D1A1C;
+    --accent: #5BC0D0;
+    --accent-light: #1A3338;
+    --accent-hover: #7DD4E0;
+    --accent-surface: #24454D;
+    --highlight: #F4B942;
+    --highlight-text: #2B2D42;
 
-    --bg-primary: #1A1212;
-    --bg-secondary: #2A1E1E;
-    --bg-card: #2A1E1E;
+    --bg-primary: #1A1E24;
+    --bg-secondary: #242A32;
+    --bg-card: #242A32;
 
-    --text-primary: #F5F0F0;
-    --text-secondary: #A89E9E;
-    --text-muted: #8A8080;
-    --text-on-accent: #1A1212;
+    --text-primary: #F0F0F2;
+    --text-secondary: #A0A4B0;
+    --text-muted: #6E7280;
+    --text-on-accent: #1A1E24;
 
-    --border: #3D3232;
-    --border-light: #332828;
-    --border-focus: #E57373;
+    --border: #343A44;
+    --border-light: #2C323C;
+    --border-focus: #5BC0D0;
 
-    --nav-bg: #150E0E;
-    --nav-border: #3D3232;
+    --nav-bg: #141820;
+    --nav-border: #343A44;
 
     --warning: #FBBF24;
     --warning-light: #362D12;
     --warning-surface: #92400E;
+    --warning-text: #FBBF24;
     --error: #F87171;
     --error-light: #3A1515;
     --error-surface: #991B1B;
-    --success: #66BB6A;
+    --success: #66D98E;
 
     --shadow-sm: 0 1px 3px rgba(0,0,0,0.20);
     --shadow-md: 0 4px 16px rgba(0,0,0,0.25);
@@ -103,36 +110,39 @@
   }
 }
 
-/* ── Modo Escuro (forçado via data-theme) — Identidade EAB ── */
+/* ── Modo Escuro (forçado via data-theme) — Leitura em Dia ── */
 :root[data-theme="dark"] {
-  --accent: #E57373;
-  --accent-light: #3D1517;
-  --accent-hover: #EF9A9A;
-  --accent-surface: #4D1A1C;
+  --accent: #5BC0D0;
+  --accent-light: #1A3338;
+  --accent-hover: #7DD4E0;
+  --accent-surface: #24454D;
+  --highlight: #F4B942;
+  --highlight-text: #2B2D42;
 
-  --bg-primary: #1A1212;
-  --bg-secondary: #2A1E1E;
-  --bg-card: #2A1E1E;
+  --bg-primary: #1A1E24;
+  --bg-secondary: #242A32;
+  --bg-card: #242A32;
 
-  --text-primary: #F5F0F0;
-  --text-secondary: #A89E9E;
-  --text-muted: #8A8080;
-  --text-on-accent: #1A1212;
+  --text-primary: #F0F0F2;
+  --text-secondary: #A0A4B0;
+  --text-muted: #6E7280;
+  --text-on-accent: #1A1E24;
 
-  --border: #3D3232;
-  --border-light: #332828;
-  --border-focus: #E57373;
+  --border: #343A44;
+  --border-light: #2C323C;
+  --border-focus: #5BC0D0;
 
-  --nav-bg: #150E0E;
-  --nav-border: #3D3232;
+  --nav-bg: #141820;
+  --nav-border: #343A44;
 
   --warning: #FBBF24;
   --warning-light: #362D12;
   --warning-surface: #92400E;
+  --warning-text: #FBBF24;
   --error: #F87171;
   --error-light: #3A1515;
   --error-surface: #991B1B;
-  --success: #66BB6A;
+  --success: #66D98E;
 
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.20);
   --shadow-md: 0 4px 16px rgba(0,0,0,0.25);
@@ -153,7 +163,7 @@ body {
   color: var(--text-primary);
   overscroll-behavior-y: contain;
   font-family: var(--font-body);
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.5;
   max-width: 640px;
   margin-inline: auto;
@@ -529,7 +539,7 @@ img { max-width: 100%; display: block; }
 .input-group input:focus,
 .input-group select:focus {
   border-color: var(--border-focus);
-  box-shadow: 0 0 0 3px rgba(151, 26, 29, 0.1);
+  box-shadow: 0 0 0 3px rgba(31, 122, 140, 0.15);
 }
 
 .input-group input::placeholder { color: var(--text-muted); }
@@ -3088,8 +3098,8 @@ const i18n = {
     totalBooks: 'Livros no acervo',
     newLoan: 'Novo Empréstimo',
     newLoanDesc: 'Registrar saída de livro',
-    checkBasket: 'Conferir Cesta',
-    checkBasketDesc: 'Verificar devoluções',
+    checkBasket: 'Conferir Devoluções',
+    checkBasketDesc: 'Verificar livros devolvidos',
     recentActivity: 'Atividade recente',
     noActivityTitle: 'Nenhuma atividade ainda',
     noActivityText: 'Cadastre turmas e alunos para começar a registrar empréstimos',
@@ -3118,7 +3128,7 @@ const i18n = {
     noStudentsTitle: 'Nenhum aluno cadastrado',
     noStudentsText: 'Vá em Cadastros para adicionar turmas e alunos',
     noStudentsRegText: 'Cadastre turmas primeiro, depois adicione alunos a cada uma',
-    checkTitle: 'Conferência da Cesta',
+    checkTitle: 'Conferir Devoluções',
     noCheckTitle: 'Nenhum empréstimo ativo',
     noCheckText: 'Quando houver livros emprestados, eles aparecerão aqui para conferência',
     registryTitle: 'Cadastros',
@@ -3140,7 +3150,7 @@ const i18n = {
     noHomeworkText: 'Tire uma foto da tarefa de casa para registrar',
     navHome: 'Início',
     navLoan: 'Empréstimo',
-    navCheck: 'Conferência',
+    navCheck: 'Devoluções',
     navRegistry: 'Cadastros',
     navHomework: 'Tarefa',
     add: 'Adicionar',
