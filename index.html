@@ -3241,10 +3241,10 @@ const i18n = {
     profileTitle: 'Perfil do Aluno',
     profileHistory: 'Histórico de leituras',
     profileBooksRead: 'Livros lidos',
-    profilePending: 'Pendente',
+    profilePending: 'Emprestado',
     profileDaysAvg: 'Média (dias)',
     profileReturned: 'Devolvido',
-    profilePendingStatus: 'Pendente',
+    profilePendingStatus: 'Emprestado',
     profileRepeated: 'Repetido',
     profileRepeatAlert: 'Este aluno já leu livros repetidos:',
     profileNoHistory: 'Nenhum empréstimo registrado',
@@ -4120,7 +4120,7 @@ function renderRecentEmprestimos() {
       var livro = livrosCache.find(function(l) { return l.id === emp.livro_id; });
       var data = emp.data_emprestimo ? emp.data_emprestimo.toDate() : new Date();
       var dataStr = formatDateRelative(data);
-      var status = emp.devolvido ? '✓ ' + t('profileReturned') : '⏳ ' + t('profilePendingStatus');
+      var status = emp.devolvido ? '✓ ' + t('profileReturned') : '📖 ' + t('profilePendingStatus');
 
       html += '<div class="loan-record">' +
         '<div class="loan-record__icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg></div>' +
@@ -5169,9 +5169,9 @@ function renderPerfilAluno() {
           }
         } else {
           iconClass = 'timeline-icon--pending';
-          statusHtml = '<span class="timeline-status timeline-status--pending">⏳ ' + t('profilePendingStatus') + '</span>';
-          var diasPendente = Math.floor((new Date() - dataEmp) / 86400000);
-          metaExtra = ' · ' + diasPendente + ' ' + t('profileDays');
+          statusHtml = '<span class="timeline-status timeline-status--pending">📖 ' + t('profilePendingStatus') + '</span>';
+          var diasEmprestado = Math.floor((new Date() - dataEmp) / 86400000);
+          metaExtra = ' · ' + diasEmprestado + ' ' + t('profileDays');
         }
 
         if (isRepeated) {
@@ -5344,9 +5344,9 @@ function renderPerfilLivro() {
           }
         } else {
           iconClass = 'timeline-icon--pending';
-          statusHtml = '<span class="timeline-status timeline-status--pending">⏳ ' + t('profilePendingStatus') + '</span>';
-          var diasPendente = Math.floor((new Date() - dataEmp) / 86400000);
-          metaExtra = ' · ' + diasPendente + ' ' + t('profileDays');
+          statusHtml = '<span class="timeline-status timeline-status--pending">📖 ' + t('profilePendingStatus') + '</span>';
+          var diasEmprestado = Math.floor((new Date() - dataEmp) / 86400000);
+          metaExtra = ' · ' + diasEmprestado + ' ' + t('profileDays');
         }
 
         var iconSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>';
