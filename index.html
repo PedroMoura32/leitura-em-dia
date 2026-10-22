@@ -3765,7 +3765,14 @@ function renderLivros() {
   var container = document.getElementById('books-list-container');
   if (!container) return;
   var filtered = livrosCache.filter(function(l) {
-    if (filtroLivroSerie !== 'todas' && l.serie !== filtroLivroSerie) return false;
+    if (filtroLivroSerie !== 'todas') {
+      var ls = l.serie;
+      if (!ls && l.turma_id) {
+        var lt = turmasCache.find(function(tt) { return tt.id === l.turma_id; });
+        ls = lt ? lt.serie : '';
+      }
+      if (ls !== filtroLivroSerie) return false;
+    }
     if (filtroLivroBusca) {
       var busca = filtroLivroBusca.toLowerCase();
       return l.titulo.toLowerCase().indexOf(busca) !== -1 || String(l.numero).indexOf(busca) !== -1;
@@ -4157,7 +4164,13 @@ function registrarEmprestimo() {
   if (!turma) return;
 
   var livro = livrosCache.find(function(l) {
-    return String(l.numero).toUpperCase() === numero && l.serie === turma.serie;
+    if (String(l.numero).toUpperCase() !== numero) return false;
+    var livroSerie = l.serie;
+    if (!livroSerie && l.turma_id) {
+      var livroTurma = turmasCache.find(function(tt) { return tt.id === l.turma_id; });
+      livroSerie = livroTurma ? livroTurma.serie : '';
+    }
+    return livroSerie === turma.serie;
   });
 
   if (!livro) {
@@ -4255,7 +4268,12 @@ inputLivroNumero.addEventListener('input', function() {
   }
 
   var results = livrosCache.filter(function(l) {
-    if (l.serie !== turma.serie) return false;
+    var livroSerie = l.serie;
+    if (!livroSerie && l.turma_id) {
+      var livroTurma = turmasCache.find(function(tt) { return tt.id === l.turma_id; });
+      livroSerie = livroTurma ? livroTurma.serie : '';
+    }
+    if (livroSerie !== turma.serie) return false;
     var num = String(l.numero).toUpperCase();
     var titulo = (l.titulo || '').toUpperCase();
     return num.indexOf(query) !== -1 || titulo.indexOf(query) !== -1;
@@ -4787,7 +4805,11 @@ if (btnImportExcel && inputImportExcel) {
 
 function processImport(wb, statusEl) {
   var turmaMap = {};
-  turmasCache.forEach(function(t) { turmaMap[t.nome.toLowerCase()] = t.id; });
+  var turmaSerieMap = {};
+  turmasCache.forEach(function(t) {
+    turmaMap[t.nome.toLowerCase()] = t.id;
+    turmaSerieMap[t.id] = t.serie;
+  });
 
   var promises = [];
   var alunosCriados = 0;
@@ -4834,7 +4856,7 @@ function processImport(wb, statusEl) {
       if (jaExiste && numero) { duplicados++; return; }
 
       promises.push(
-        db.collection('livros').add({ titulo: titulo, numero: numero, turma_id: turmaId, disponivel: true }).then(function() { livrosCriados++; })
+        db.collection('livros').add({ titulo: titulo, numero: numero, turma_id: turmaId, serie: turmaSerieMap[turmaId] || '', disponivel: true }).then(function() { livrosCriados++; })
       );
     });
   }
