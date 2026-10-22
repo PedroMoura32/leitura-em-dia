@@ -1,4 +1,4 @@
-var CACHE_NAME = 'leitura-em-dia-v5';
+var CACHE_NAME = 'leitura-em-dia-v6';
 
 var STATIC_ASSETS = [
   '/leitura-em-dia/',
@@ -12,7 +12,8 @@ var STATIC_ASSETS = [
   'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',
   'https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js',
   'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js',
-  'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js'
+  'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js'
 ];
 
 self.addEventListener('install', function(event) {
