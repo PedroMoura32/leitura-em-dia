@@ -2988,6 +2988,7 @@ const i18n = {
     confirmDeleteMsg: 'Tem certeza que deseja excluir',
     deleteClassWarning: 'Os alunos dessa turma não serão excluídos.',
     errorClassName: 'Informe o nome da turma',
+    errorSchoolYear: 'Informe o ano letivo (ex: 26/27)',
     errorStudentName: 'Informe o nome do aluno',
     errorSelectClass: 'Selecione a turma',
     errorBookTitle: 'Informe o título do livro',
@@ -3432,7 +3433,7 @@ function formTurma(dados) {
     '</div>' +
     '<div class="input-group">' +
     '<label for="modal-turma-ano">' + t('schoolYear') + '</label>' +
-    '<input type="number" id="modal-turma-ano" value="' + (dados.ano_letivo || new Date().getFullYear()) + '">' +
+    '<input type="text" id="modal-turma-ano" placeholder="Ex: 26/27" value="' + escapeAttr(dados.ano_letivo || (String(new Date().getFullYear()).slice(2) + '/' + String(new Date().getFullYear() + 1).slice(2))) + '">' +
     '</div>';
 }
 
@@ -3617,8 +3618,9 @@ function abrirFormTurma(id) {
   openModal(titulo, formTurma(dados || {}), function() {
     var nome = document.getElementById('modal-turma-nome').value.trim();
     var serie = document.getElementById('modal-turma-serie').value;
-    var ano = parseInt(document.getElementById('modal-turma-ano').value);
+    var ano = document.getElementById('modal-turma-ano').value.trim();
     if (!nome) { showToast(t('errorClassName'), 'error'); return; }
+    if (!ano) { showToast(t('errorSchoolYear'), 'error'); return; }
     salvarTurma({ nome: nome, serie: serie, ano_letivo: ano }, id).then(function() {
       closeModal();
       showToast(id ? t('classUpdated') : t('classCreated'), 'success');
