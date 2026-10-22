@@ -665,6 +665,94 @@ img { max-width: 100%; display: block; }
 
 
 /* ================================================================
+   QR PRINT OVERLAY
+   ================================================================ */
+.qr-print-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--bg-primary);
+  overflow-y: auto;
+}
+
+.qr-print-overlay__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-card);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.qr-print-overlay__title {
+  flex: 1;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.btn-primary--sm {
+  padding: 8px 14px;
+  font-size: 0.8125rem;
+  gap: 6px;
+}
+
+.qr-print-overlay__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 16px;
+  padding: 20px 16px;
+}
+
+.qr-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: white;
+  page-break-inside: avoid;
+}
+
+.qr-label__number {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  color: #111827;
+}
+
+.qr-label__turma {
+  font-size: 0.625rem;
+  color: #6B7280;
+  font-weight: 500;
+}
+
+@media print {
+  .no-print { display: none !important; }
+  .bottom-nav { display: none !important; }
+  .qr-print-overlay {
+    position: static;
+    overflow: visible;
+  }
+  .qr-print-overlay__grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    padding: 10px;
+  }
+  .qr-label {
+    border: 1px solid #ddd;
+    padding: 8px 4px;
+  }
+}
+
+
+/* ================================================================
    STUDENT LIST
    ================================================================ */
 .student-list {
@@ -2540,6 +2628,10 @@ img { max-width: 100%; display: block; }
     <div class="input-group mb-16">
       <input type="text" id="search-livro-cadastro" aria-label="Buscar livro" data-i18n-placeholder="searchBook" placeholder="Buscar livro...">
     </div>
+    <button class="btn-secondary mb-16" type="button" id="btn-gerar-qrcodes" style="width:100%;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="3" height="3"/><line x1="20" y1="14" x2="20" y2="20"/><line x1="14" y1="20" x2="20" y2="20"/></svg>
+      <span data-i18n="generateQR">Gerar QR Codes para impressão</span>
+    </button>
     <div class="card" id="books-list-container">
       <div class="empty-state">
         <div class="empty-state__icon">
@@ -2551,6 +2643,21 @@ img { max-width: 100%; display: block; }
     </div>
   </div>
 </section>
+
+<!-- QR Codes Print Overlay -->
+<div id="qr-print-overlay" class="qr-print-overlay" hidden>
+  <div class="qr-print-overlay__header no-print">
+    <button type="button" id="btn-qr-print-close" class="btn-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <span class="qr-print-overlay__title" data-i18n="qrPrintTitle">QR Codes dos Livros</span>
+    <button type="button" id="btn-qr-print" class="btn-primary btn-primary--sm">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      <span data-i18n="printBtn">Imprimir</span>
+    </button>
+  </div>
+  <div class="qr-print-overlay__grid" id="qr-print-grid"></div>
+</div>
 
 <!-- Importação em massa -->
 <div id="import-section" class="mt-24" hidden>
@@ -2820,6 +2927,7 @@ img { max-width: 100%; display: block; }
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <!-- ════════════════════════════════════════════════════════════════
      FIREBASE SDK (v10.12.2 — compat)
@@ -2915,6 +3023,10 @@ const i18n = {
     searchBook: 'Buscar livro...',
     bookLabel: 'Livro',
     bookNumber: 'Número do livro (ex: 146A)',
+    generateQR: 'Gerar QR Codes para impressão',
+    qrPrintTitle: 'QR Codes dos Livros',
+    printBtn: 'Imprimir',
+    qrNoBooksSelected: 'Nenhum livro encontrado para gerar QR Codes',
     scanQR: 'Escanear QR Code',
     scanQRTitle: 'Aponte para o QR Code do livro',
     scanQRHint: 'O número do livro será preenchido automaticamente',
@@ -4089,6 +4201,72 @@ function iniciarQRScanner() {
 
 btnScanQR.addEventListener('click', iniciarQRScanner);
 btnCloseQR.addEventListener('click', pararQRScanner);
+
+/* ================================================================
+   QR CODES — GERAÇÃO PARA IMPRESSÃO
+   ================================================================ */
+document.getElementById('btn-gerar-qrcodes').addEventListener('click', function() {
+  var livros = livrosCache.filter(function(l) {
+    if (filtroLivroSerie !== 'todas') return l.serie === filtroLivroSerie;
+    return true;
+  });
+
+  if (!livros.length) {
+    showToast(t('qrNoBooksSelected'), 'error');
+    return;
+  }
+
+  var overlay = document.getElementById('qr-print-overlay');
+  var grid = document.getElementById('qr-print-grid');
+  grid.innerHTML = '';
+
+  livros.forEach(function(livro) {
+    var turma = turmasCache.find(function(t) { return t.id === livro.turma_id; });
+    var turmaName = turma ? turma.nome : '';
+    var numero = String(livro.numero).toUpperCase();
+
+    var card = document.createElement('div');
+    card.className = 'qr-label';
+
+    var qrDiv = document.createElement('div');
+    card.appendChild(qrDiv);
+
+    var numEl = document.createElement('div');
+    numEl.className = 'qr-label__number';
+    numEl.textContent = numero;
+    card.appendChild(numEl);
+
+    if (turmaName) {
+      var turmaEl = document.createElement('div');
+      turmaEl.className = 'qr-label__turma';
+      turmaEl.textContent = turmaName;
+      card.appendChild(turmaEl);
+    }
+
+    grid.appendChild(card);
+
+    new QRCode(qrDiv, {
+      text: numero,
+      width: 100,
+      height: 100,
+      colorDark: '#111827',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+  });
+
+  overlay.hidden = false;
+  document.body.style.overflow = 'hidden';
+});
+
+document.getElementById('btn-qr-print-close').addEventListener('click', function() {
+  document.getElementById('qr-print-overlay').hidden = true;
+  document.body.style.overflow = '';
+});
+
+document.getElementById('btn-qr-print').addEventListener('click', function() {
+  window.print();
+});
 
 var searchAlunoEmprestimo = document.getElementById('search-aluno');
 if (searchAlunoEmprestimo) {
