@@ -665,6 +665,82 @@ img { max-width: 100%; display: block; }
 
 
 /* ================================================================
+   AUTOCOMPLETE
+   ================================================================ */
+.autocomplete-wrap {
+  position: relative;
+}
+
+.autocomplete-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.autocomplete-item {
+  padding: 10px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background 0.1s ease;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.autocomplete-item:last-child {
+  border-bottom: none;
+}
+
+.autocomplete-item:hover,
+.autocomplete-item--active {
+  background: var(--accent-light);
+}
+
+.autocomplete-item__number {
+  font-weight: 700;
+  font-size: 0.9375rem;
+  color: var(--accent);
+  min-width: 50px;
+}
+
+.autocomplete-item__title {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.autocomplete-item__status {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
+}
+
+.autocomplete-item__status--available {
+  background: var(--accent-light);
+  color: var(--accent);
+}
+
+.autocomplete-item__status--unavailable {
+  background: var(--error-light);
+  color: var(--error);
+}
+
+
+/* ================================================================
    QR PRINT OVERLAY
    ================================================================ */
 .qr-print-overlay {
@@ -2505,8 +2581,9 @@ img { max-width: 100%; display: block; }
   </div>
 
   <div class="section-title" data-i18n="bookLabel">Livro</div>
-  <div class="input-group">
-    <input type="text" id="input-livro-numero" aria-label="Número do livro" data-i18n-placeholder="bookNumber" placeholder="Número do livro (ex: 146A)">
+  <div class="input-group autocomplete-wrap">
+    <input type="text" id="input-livro-numero" autocomplete="off" aria-label="Número do livro" data-i18n-placeholder="bookNumber" placeholder="Número do livro (ex: 146A)">
+    <div class="autocomplete-list" id="livro-autocomplete" hidden></div>
   </div>
 
   <button class="qr-btn" type="button" id="btn-scan-qr">
@@ -3022,7 +3099,9 @@ const i18n = {
     searchStudent: 'Buscar aluno...',
     searchBook: 'Buscar livro...',
     bookLabel: 'Livro',
-    bookNumber: 'Número do livro (ex: 146A)',
+    bookNumber: 'Buscar por número ou título (ex: 146A)',
+    bookAvailable: 'Disponível',
+    bookUnavailable: 'Emprestado',
     generateQR: 'Gerar QR Codes para impressão',
     qrPrintTitle: 'QR Codes dos Livros',
     printBtn: 'Imprimir',
@@ -4155,6 +4234,68 @@ document.getElementById('student-list-emprestimo').addEventListener('click', fun
 });
 
 document.getElementById('btn-registrar-emprestimo').addEventListener('click', registrarEmprestimo);
+
+/* ================================================================
+   AUTOCOMPLETE — LIVRO
+   ================================================================ */
+var inputLivroNumero = document.getElementById('input-livro-numero');
+var livroAutocomplete = document.getElementById('livro-autocomplete');
+
+inputLivroNumero.addEventListener('input', function() {
+  var query = this.value.trim().toUpperCase();
+  if (query.length < 1) {
+    livroAutocomplete.hidden = true;
+    return;
+  }
+
+  var turma = turmasCache.find(function(t) { return t.id === emprestimoTurmaSelecionada; });
+  if (!turma) {
+    livroAutocomplete.hidden = true;
+    return;
+  }
+
+  var results = livrosCache.filter(function(l) {
+    if (l.serie !== turma.serie) return false;
+    var num = String(l.numero).toUpperCase();
+    var titulo = (l.titulo || '').toUpperCase();
+    return num.indexOf(query) !== -1 || titulo.indexOf(query) !== -1;
+  }).slice(0, 8);
+
+  if (!results.length) {
+    livroAutocomplete.hidden = true;
+    return;
+  }
+
+  var html = '';
+  results.forEach(function(livro) {
+    var statusClass = livro.disponivel ? 'autocomplete-item__status--available' : 'autocomplete-item__status--unavailable';
+    var statusText = livro.disponivel ? t('bookAvailable') : t('bookUnavailable');
+    html += '<div class="autocomplete-item" data-numero="' + escapeAttr(livro.numero) + '">' +
+      '<span class="autocomplete-item__number">' + escapeHtml(livro.numero) + '</span>' +
+      '<span class="autocomplete-item__title">' + escapeHtml(livro.titulo || '') + '</span>' +
+      '<span class="autocomplete-item__status ' + statusClass + '">' + statusText + '</span>' +
+      '</div>';
+  });
+  livroAutocomplete.innerHTML = html;
+  livroAutocomplete.hidden = false;
+});
+
+livroAutocomplete.addEventListener('click', function(e) {
+  var item = e.target.closest('.autocomplete-item');
+  if (!item) return;
+  inputLivroNumero.value = item.dataset.numero;
+  livroAutocomplete.hidden = true;
+});
+
+inputLivroNumero.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') livroAutocomplete.hidden = true;
+});
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.autocomplete-wrap')) {
+    livroAutocomplete.hidden = true;
+  }
+});
 
 var qrScanner = null;
 var btnScanQR = document.getElementById('btn-scan-qr');
