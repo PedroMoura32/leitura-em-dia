@@ -4847,11 +4847,11 @@ if (btnDownloadTemplate) {
     wsAlunos['!cols'] = [{ wch: 30 }, { wch: 15 }];
     XLSX.utils.book_append_sheet(wb, wsAlunos, 'Alunos');
 
-    var livrosData = [['titulo', 'numero', 'turma']];
-    livrosData.push(['O Pequeno Príncipe', '42', '3º Ano A']);
-    livrosData.push(['A Bela Adormecida', '146A', '5º Ano B']);
+    var livrosData = [['titulo', 'numero', 'serie']];
+    livrosData.push(['O Pequeno Príncipe', '42', '3']);
+    livrosData.push(['A Bela Adormecida', '146A', '5']);
     var wsLivros = XLSX.utils.aoa_to_sheet(livrosData);
-    wsLivros['!cols'] = [{ wch: 35 }, { wch: 10 }, { wch: 15 }];
+    wsLivros['!cols'] = [{ wch: 35 }, { wch: 10 }, { wch: 10 }];
     XLSX.utils.book_append_sheet(wb, wsLivros, 'Livros');
 
     XLSX.writeFile(wb, 'template_leitura_em_dia.xlsx');
@@ -4926,19 +4926,30 @@ function processImport(wb, statusEl) {
     livrosRows.forEach(function(row) {
       var titulo = (row.titulo || row.Titulo || row['título'] || row['Título'] || '').trim();
       var numero = String(row.numero || row.Numero || row['número'] || row['Número'] || '').trim();
+      var serie = String(row.serie || row.Serie || row['série'] || row['Série'] || '').trim();
       var turma = (row.turma || row.Turma || '').trim();
-      if (!titulo || !turma) return;
+      if (!titulo) return;
+      if (!serie && !turma) return;
 
-      var turmaId = turmaMap[turma.toLowerCase()];
-      if (!turmaId) return;
+      var turmaId = '';
+      if (serie) {
+        var turmaDaSerie = turmasCache.find(function(tt) { return tt.serie === serie; });
+        turmaId = turmaDaSerie ? turmaDaSerie.id : '';
+      } else if (turma) {
+        turmaId = turmaMap[turma.toLowerCase()] || '';
+        serie = turmaId ? (turmaSerieMap[turmaId] || '') : '';
+      }
+      if (!serie) return;
 
       var jaExiste = livrosCache.some(function(l) {
-        return l.numero && l.numero.toLowerCase() === numero.toLowerCase() && l.turma_id === turmaId;
+        return l.numero && l.numero.toLowerCase() === numero.toLowerCase() && l.serie === serie;
       });
       if (jaExiste && numero) { duplicados++; return; }
 
+      var livroData = { titulo: titulo, numero: numero, serie: serie, disponivel: true };
+      if (turmaId) livroData.turma_id = turmaId;
       promises.push(
-        db.collection('livros').add({ titulo: titulo, numero: numero, turma_id: turmaId, serie: turmaSerieMap[turmaId] || '', disponivel: true }).then(function() { livrosCriados++; })
+        db.collection('livros').add(livroData).then(function() { livrosCriados++; })
       );
     });
   }
